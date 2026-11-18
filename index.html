@@ -1,0 +1,2309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusAttendance - Enterprise Attendance & Infrastructure Platform</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Chart.js for High-End Interactive Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+    @keyframes pulse-subtle {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.05); }
+    }
+    .live-dot {
+      animation: pulse-subtle 2s infinite ease-in-out;
+    }
+
+    /* Print & PDF styling */
+    @media print {
+      body { background: white !important; color: black !important; }
+      header, aside, .no-print, button, #records-filter-date, #records-filter-dept, #records-filter-status, #records-filter-reset, #records-filter-subject {
+        display: none !important;
+      }
+      #tab-records { display: block !important; }
+      .tab-content:not(#tab-records) { display: none !important; }
+      .print-only { display: block !important; margin-bottom: 24px; }
+      table { width: 100% !important; border-collapse: collapse !important; }
+      th, td { border: 1px solid #cbd5e1 !important; padding: 8px 12px !important; }
+    }
+    .print-only {
+      display: none;
+    }
+  </style>
+</head>
+
+<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+
+  <!-- ==================== 1. LOGIN SCREEN ==================== -->
+  <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4 relative overflow-hidden">
+    <!-- Ambient glowing backgrounds -->
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-950/40 border border-white/40 p-8 sm:p-10 space-y-6 relative z-10">
+      
+      <!-- Brand Header -->
+      <div class="text-center space-y-2">
+        <div class="inline-flex p-3.5 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-2xl shadow-lg shadow-brand-500/30">
+          <i data-lucide="database" class="w-7 h-7 stroke-[2.2]"></i>
+        </div>
+        <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">NexusAttendance</h1>
+        <p class="text-xs text-slate-500 font-medium">Enterprise Multi-Role Attendance, Analytics & Leave Platform</p>
+      </div>
+
+      <!-- Quick Demo Credentials Helper (Fills form only - NO auto-login) -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-slate-700 flex items-center space-x-1">
+            <i data-lucide="key-round" class="w-3.5 h-3.5 text-brand-600"></i>
+            <span>Demo Test Credentials:</span>
+          </span>
+          <span class="text-[11px] text-slate-400">Click to fill inputs only (no auto-login)</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="fillRoleCredentials('admin')" class="p-2.5 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/80 text-left transition-all group">
+            <div class="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs">
+              <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+              <span>Admin</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate mt-0.5">admin@nexus.com</p>
+          </button>
+
+          <button type="button" onclick="fillRoleCredentials('teacher')" class="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/80 text-left transition-all group">
+            <div class="flex items-center space-x-1.5 text-emerald-700 font-bold text-xs">
+              <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
+              <span>Teacher</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate mt-0.5">teacher@nexus.com</p>
+          </button>
+
+          <button type="button" onclick="fillRoleCredentials('student')" class="p-2.5 rounded-xl border border-purple-200 bg-purple-50/60 hover:bg-purple-100/80 text-left transition-all group">
+            <div class="flex items-center space-x-1.5 text-purple-700 font-bold text-xs">
+              <i data-lucide="user" class="w-3.5 h-3.5"></i>
+              <span>Student</span>
+            </div>
+            <p class="text-[10px] text-slate-500 truncate mt-0.5">student@nexus.com</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- Auth Mode Switcher: Sign In vs Sign Up -->
+      <div class="flex items-center p-1 bg-slate-100 rounded-2xl text-xs font-bold">
+        <button type="button" id="auth-tab-login" onclick="toggleAuthMode('login')"
+          class="flex-1 py-2 rounded-xl bg-white text-brand-700 shadow-sm transition-all text-center">
+          Sign In
+        </button>
+        <button type="button" id="auth-tab-register" onclick="toggleAuthMode('register')"
+          class="flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition-all text-center">
+          Create Account (Sign Up)
+        </button>
+      </div>
+
+      <!-- 1. LOGIN FORM -->
+      <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4 pt-1">
+        <!-- Error Alert -->
+        <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3.5 py-3 rounded-xl flex items-center space-x-2.5">
+          <i data-lucide="alert-triangle" class="w-4 h-4 flex-shrink-0 text-rose-500"></i>
+          <span id="login-error-text" class="font-medium">Invalid email or password</span>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Email Address</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="email" id="login-email" required placeholder="admin@nexus.com"
+              class="w-full pl-10 pr-4 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all">
+          </div>
+        </div>
+
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">Password</label>
+            <span class="text-xs text-brand-600 font-semibold cursor-pointer" onclick="showToast('Demo password: admin123', 'info')">Demo: admin123</span>
+          </div>
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="login-password" required placeholder="••••••••"
+              class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all font-mono">
+            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+              <i data-lucide="eye" id="toggle-eye" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" id="login-submit-btn"
+          class="w-full bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all duration-200 shadow-lg shadow-brand-500/25 flex items-center justify-center space-x-2 active:scale-[0.99]">
+          <i data-lucide="log-in" class="w-4 h-4"></i>
+          <span>Sign In to Dashboard</span>
+        </button>
+      </form>
+
+      <!-- 2. REGISTRATION FORM (NEW USER SIGN UP) -->
+      <form id="register-form" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3.5 pt-1 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Full Name *</label>
+          <div class="relative">
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="reg-name" required placeholder="e.g. John Doe"
+              class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Account Role *</label>
+            <select id="reg-role" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-bold text-brand-700">
+              <option value="Student">Student</option>
+              <option value="Teacher">Teacher (Faculty)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Department *</label>
+            <select id="reg-dept" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-medium">
+              <option value="Computer Science">Computer Science</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Information Tech">Information Tech</option>
+              <option value="Software Eng">Software Eng</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">University / Personal Email *</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="email" id="reg-email" required placeholder="name@university.edu"
+              class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Password *</label>
+          <div class="relative">
+            <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="password" id="reg-password" required placeholder="At least 4 characters" minlength="4"
+              class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 font-mono">
+          </div>
+        </div>
+
+        <button type="submit" id="reg-submit-btn"
+          class="w-full bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all duration-200 shadow-lg shadow-emerald-500/25 flex items-center justify-center space-x-2 active:scale-[0.99] mt-2">
+          <i data-lucide="user-plus" class="w-4 h-4"></i>
+          <span>Create Account & Sign In</span>
+        </button>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== 2. MAIN APPLICATION ==================== -->
+  <div id="dashboard-app" class="hidden min-h-screen flex flex-col bg-slate-50">
+
+    <!-- Top Navigation Bar -->
+    <header class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 shadow-sm no-print">
+      <div class="flex items-center space-x-3 sm:space-x-4">
+        <!-- Logo for mobile -->
+        <div class="flex items-center space-x-2.5 md:hidden">
+          <div class="p-1.5 bg-brand-600 text-white rounded-lg">
+            <i data-lucide="database" class="w-5 h-5"></i>
+          </div>
+          <span class="font-bold text-slate-900 tracking-tight">Nexus</span>
+        </div>
+
+        <!-- Breadcrumb / Page Status -->
+        <div class="hidden sm:flex items-center space-x-2 text-xs">
+          <span class="text-slate-400">Workspace</span>
+          <span class="text-slate-300">/</span>
+          <span class="font-semibold text-slate-700">Attendance & Governance Hub</span>
+        </div>
+
+        <!-- Live Status Chip -->
+        <div class="hidden lg:flex items-center space-x-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 live-dot"></span>
+          <span>Live Sync Active</span>
+        </div>
+      </div>
+
+      <!-- Right Header Actions & Role Switcher -->
+      <div class="flex items-center space-x-3">
+        <!-- Live Role Switcher Pill -->
+        <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-xl text-xs">
+          <span class="text-[11px] font-bold text-slate-500 px-2 hidden sm:inline">Role:</span>
+          <select id="global-role-switcher" onchange="handleRoleSwitchChange(this.value)"
+            class="text-xs bg-white font-bold text-brand-700 border border-slate-200 px-2.5 py-1 rounded-lg focus:outline-none cursor-pointer">
+            <option value="Administrator">Administrator</option>
+            <option value="Teacher">Teacher (Faculty)</option>
+            <option value="Student">Student</option>
+          </select>
+        </div>
+
+        <!-- Logout Button -->
+        <button onclick="handleLogout()" title="Sign Out" class="flex items-center space-x-1.5 text-xs text-slate-500 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 px-2.5 py-1.5 rounded-xl transition-colors font-medium">
+          <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+          <span class="hidden sm:inline">Logout</span>
+        </button>
+      </div>
+    </header>
+
+
+    <!-- Main Layout: Sidebar + View Content -->
+    <div class="flex-1 flex overflow-hidden">
+
+      <!-- ================= SIDEBAR ================= -->
+      <aside class="w-64 bg-white border-r border-slate-200/80 flex flex-col hidden md:flex flex-shrink-0 no-print">
+        <!-- Brand Title -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-100">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-xl shadow-md shadow-brand-500/20">
+              <i data-lucide="database" class="w-5 h-5 stroke-[2.2]"></i>
+            </div>
+            <div>
+              <span class="text-base font-extrabold text-slate-900 tracking-tight block">NexusAttendance</span>
+              <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Enterprise Hub</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Menu -->
+        <nav class="flex-1 px-4 py-5 space-y-1.5 overflow-y-auto">
+          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-2">Main Navigation</p>
+
+          <!-- Dashboard -->
+          <button onclick="switchTab('dashboard')" id="nav-dashboard"
+            class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all bg-brand-50 text-brand-700 shadow-sm border border-brand-100/60">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+              <span>Dashboard</span>
+            </div>
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-600"></span>
+          </button>
+
+          <!-- Mark Attendance (Admin & Teacher only) -->
+          <button onclick="switchTab('mark')" id="nav-mark"
+            class="nav-btn role-faculty w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="check-square" class="w-4 h-4"></i>
+              <span>Mark Attendance</span>
+            </div>
+            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-md border border-emerald-200">Live</span>
+          </button>
+
+          <!-- Historical Records -->
+          <button onclick="switchTab('records')" id="nav-records"
+            class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="history" class="w-4 h-4"></i>
+              <span>View Records</span>
+            </div>
+            <span class="text-[10px] bg-slate-100 text-slate-500 font-bold px-1.5 py-0.5 rounded-md">Audit</span>
+          </button>
+
+          <!-- Leave Management (All roles) -->
+          <button onclick="switchTab('leaves')" id="nav-leaves"
+            class="nav-btn w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+            <div class="flex items-center space-x-3">
+              <i data-lucide="calendar-off" class="w-4 h-4"></i>
+              <span>Leave Management</span>
+            </div>
+            <span id="nav-leave-badge" class="text-[10px] bg-amber-50 text-amber-700 font-bold px-1.5 py-0.5 rounded-md border border-amber-200">2 Pending</span>
+          </button>
+
+          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider pt-4 mb-2 role-admin">System Admin</p>
+
+          <!-- System Architecture (Admin only) -->
+          <button onclick="switchTab('architecture')" id="nav-architecture"
+            class="nav-btn role-admin w-full flex items-center space-x-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900">
+            <i data-lucide="network" class="w-4 h-4"></i>
+            <span>System Architecture</span>
+          </button>
+        </nav>
+
+        <!-- Current User Card in Sidebar -->
+        <div class="p-3.5 border-t border-slate-100 bg-slate-50/50 m-3 rounded-2xl border">
+          <div class="flex items-center space-x-3">
+            <div id="user-avatar"
+              class="w-9 h-9 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-600 flex items-center justify-center text-white font-bold text-xs shadow-md shadow-brand-500/20">
+              A
+            </div>
+            <div class="text-left truncate flex-1">
+              <p id="sidebar-user-name" class="text-xs font-bold text-slate-800 truncate">Admin User</p>
+              <p id="sidebar-user-role" class="text-[11px] text-slate-400 font-medium truncate">Administrator</p>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+
+      <!-- ================= MAIN VIEW CONTAINER ================= -->
+      <main class="flex-1 overflow-y-auto bg-slate-50/60 p-4 sm:p-6 lg:p-8">
+        <div class="max-w-6xl mx-auto space-y-6">
+
+          <!-- ================= TAB 1: DASHBOARD ================= -->
+          <div id="tab-dashboard" class="tab-content space-y-6">
+
+            <!-- Welcome Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
+                  <span>Welcome back,</span>
+                  <span id="welcome-user-name" class="text-brand-600">Admin User</span>
+                  <span>👋</span>
+                </h2>
+                <p id="welcome-user-subtitle" class="text-xs text-slate-500 mt-0.5">Here is today's real-time attendance overview, trend analytics, and department compliance.</p>
+              </div>
+              <div class="flex items-center space-x-2 text-xs font-semibold">
+                <span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200">
+                  📅 <span id="dashboard-date">Nov 18, 2026</span>
+                </span>
+                <button onclick="refreshDashboard()" title="Refresh Data" class="p-2 hover:bg-slate-100 text-slate-500 rounded-xl transition-colors border border-slate-200">
+                  <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Student Profile Banner (Visible only when logged in as Student) -->
+            <div id="student-kpi-banner" class="hidden bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl shadow-brand-500/20 space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center space-x-3.5">
+                  <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-black text-lg border border-white/30">
+                    AS
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-black tracking-tight" id="student-banner-name">Alice Smith (STU001)</h3>
+                    <p class="text-xs text-indigo-100">B.Tech Computer Science &bull; Semester 5 &bull; Section A</p>
+                  </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button onclick="openApplyLeaveModal()" class="px-4 py-2 rounded-xl bg-white text-brand-700 font-bold text-xs hover:bg-indigo-50 transition-all shadow-md active:scale-95 flex items-center space-x-1.5">
+                    <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                    <span>Apply for Leave</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-3 border-t border-white/20 text-xs">
+                <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+                  <span class="text-indigo-200 text-[11px] block">My Overall Attendance</span>
+                  <span class="text-2xl font-black block mt-0.5">92.4%</span>
+                </div>
+                <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+                  <span class="text-indigo-200 text-[11px] block">Classes Attended</span>
+                  <span class="text-2xl font-black block mt-0.5">48 / 52</span>
+                </div>
+                <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+                  <span class="text-indigo-200 text-[11px] block">Late Arrivals</span>
+                  <span class="text-2xl font-black block mt-0.5 text-amber-300">2</span>
+                </div>
+                <div class="bg-white/10 rounded-xl p-3 border border-white/15">
+                  <span class="text-indigo-200 text-[11px] block">Eligibility Status</span>
+                  <span class="text-sm font-bold bg-emerald-400/20 text-emerald-200 border border-emerald-300/30 px-2 py-0.5 rounded-md inline-block mt-1">✓ Eligible for Exams</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- 4 Metric KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+
+              <!-- Total Enrolled -->
+              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-500">Total Enrolled</span>
+                  <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
+                    <i data-lucide="users" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between">
+                  <span id="stat-total" class="text-2xl font-black text-slate-900 tracking-tight">50</span>
+                  <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
+                    <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +4 new
+                  </span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400">Enrolled across 4 departments</div>
+              </div>
+
+              <!-- Present Today -->
+              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-500">Present Today</span>
+                  <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i data-lucide="user-check" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between">
+                  <span id="stat-present" class="text-2xl font-black text-emerald-600 tracking-tight">42</span>
+                  <span id="stat-present-rate" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">84.0% rate</span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400">Verified through active check-ins</div>
+              </div>
+
+              <!-- Absent Today -->
+              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-500">Absent Today</span>
+                  <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
+                    <i data-lucide="user-x" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between">
+                  <span id="stat-absent" class="text-2xl font-black text-rose-600 tracking-tight">8</span>
+                  <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">16.0% rate</span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400">Requires follow-up / leave proof</div>
+              </div>
+
+              <!-- Average Semester Attendance -->
+              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-semibold text-slate-500">Semester Avg</span>
+                  <div class="p-2 bg-purple-50 text-purple-600 rounded-xl">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i>
+                  </div>
+                </div>
+                <div class="mt-3 flex items-baseline justify-between">
+                  <span id="stat-avg" class="text-2xl font-black text-brand-600 tracking-tight">88.5%</span>
+                  <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
+                    <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +2.3%
+                  </span>
+                </div>
+                <div class="mt-2 text-[11px] text-slate-400">Above 75% exam cutoff</div>
+              </div>
+
+            </div>
+
+
+            <!-- Interactive Chart & Department Performance -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+              <!-- HIGH-END INTERACTIVE CHART (DAILY / WEEKLY / MONTHLY TOGGLE) -->
+              <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                  <div>
+                    <h3 id="chart-trend-title" class="text-sm font-bold text-slate-900 tracking-tight">Weekly Attendance Trend</h3>
+                    <p id="chart-trend-subtitle" class="text-xs text-slate-400">Interactive distribution of Present vs Absent students</p>
+                  </div>
+                  <!-- WORKING TOGGLE PILL FOR DAILY / WEEKLY / MONTHLY -->
+                  <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                    <button id="chart-btn-daily" onclick="switchChartPeriod('daily')"
+                      class="px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all">Daily</button>
+                    <button id="chart-btn-weekly" onclick="switchChartPeriod('weekly')"
+                      class="px-2.5 py-1 rounded-lg bg-white shadow-xs text-brand-700 font-bold transition-all">Weekly</button>
+                    <button id="chart-btn-monthly" onclick="switchChartPeriod('monthly')"
+                      class="px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all">Monthly</button>
+                  </div>
+                </div>
+                <div class="h-64 w-full relative">
+                  <canvas id="attendanceChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Department Attendance Breakdown -->
+              <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+                <div class="flex justify-between items-center">
+                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Department Compliance</h3>
+                  <span class="text-[11px] text-slate-400 font-semibold">Live Breakdown</span>
+                </div>
+
+                <div class="space-y-3.5 pt-2">
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="font-semibold text-slate-700">Computer Science</span>
+                      <span class="font-bold text-emerald-600">94%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-emerald-500 h-2 rounded-full" style="width: 94%"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="font-semibold text-slate-700">Data Science</span>
+                      <span class="font-bold text-brand-600">91%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-brand-500 h-2 rounded-full" style="width: 91%"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="font-semibold text-slate-700">Software Engineering</span>
+                      <span class="font-bold text-indigo-600">89%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-indigo-500 h-2 rounded-full" style="width: 89%"></div>
+                    </div>
+                  </div>
+
+                  <div>
+                    <div class="flex justify-between text-xs mb-1">
+                      <span class="font-semibold text-slate-700">Information Tech</span>
+                      <span class="font-bold text-amber-600">82%</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                      <div class="bg-amber-500 h-2 rounded-full" style="width: 82%"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                  <span class="flex items-center space-x-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>MongoDB Database Active</span>
+                  </span>
+                  <span class="font-mono text-slate-400">8ms latency</span>
+                </div>
+              </div>
+
+            </div>
+
+
+            <!-- STUDENT PERFORMANCE ANALYTICS & SEMESTER COMPLIANCE -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Student Performance & Semester Attendance Roster</h3>
+                  <p class="text-xs text-slate-400">University 75% mandatory examination eligibility compliance audit</p>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs text-slate-500 font-medium">Filter:</span>
+                  <select id="analytics-filter" onchange="filterStudentAnalytics(this.value)" class="text-xs bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl font-medium focus:outline-none">
+                    <option value="all">All Enrolled Students</option>
+                    <option value="risk">At Risk (< 75% Attendance)</option>
+                    <option value="top">Top Attendance (> 90%)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                      <th class="px-6 py-3.5">Student</th>
+                      <th class="px-6 py-3.5">Department</th>
+                      <th class="px-6 py-3.5">Attendance Rate</th>
+                      <th class="px-6 py-3.5">Classes Attended</th>
+                      <th class="px-6 py-3.5 text-center">Exam Eligibility</th>
+                    </tr>
+                  </thead>
+                  <tbody id="analytics-table-body" class="divide-y divide-slate-100">
+                    <!-- Dynamic rendering -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- ================= TAB 2: MARK ATTENDANCE ================= -->
+          <div id="tab-mark" class="tab-content hidden space-y-6">
+
+            <!-- Class & Subject Management Header -->
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm space-y-4">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Mark Attendance</h2>
+                  <p class="text-xs text-slate-500 mt-0.5">Select class, semester, and course subject to record daily session attendance.</p>
+                </div>
+
+                <!-- Quick Action Buttons -->
+                <div class="flex items-center space-x-2">
+                  <button onclick="openAddStudentModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
+                    <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                    <span>Add Student</span>
+                  </button>
+                  <button onclick="markAllStudents('present')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-2 rounded-xl transition-all flex items-center space-x-1.5 active:scale-95">
+                    <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
+                    <span>Mark All Present</span>
+                  </button>
+                  <button onclick="clearAttendanceSelection()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold px-3 py-2 rounded-xl transition-all">
+                    Clear
+                  </button>
+                </div>
+              </div>
+
+              <!-- Class, Semester & Subject Selectors -->
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 text-xs">
+                <div>
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Class & Section</label>
+                  <select id="attendance-class" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                    <option value="Semester 5 - Section A">Semester 5 - Section A (CS)</option>
+                    <option value="Semester 3 - Section B">Semester 3 - Section B (DS)</option>
+                    <option value="Semester 7 - Section A">Semester 7 - Section A (SE)</option>
+                    <option value="Semester 1 - Section C">Semester 1 - Section C (IT)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Course Subject</label>
+                  <select id="attendance-subject" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                    <option value="CS-301: Data Structures">CS-301: Data Structures & Algorithms</option>
+                    <option value="CS-302: Database Systems">CS-302: Database Management Systems</option>
+                    <option value="CS-303: Computer Networks">CS-303: Computer Networks & Security</option>
+                    <option value="CS-304: Software Engineering">CS-304: Software Engineering</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Session Timing</label>
+                  <div class="flex items-center space-x-2">
+                    <span class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-600">
+                      09:00 AM - 10:30 AM
+                    </span>
+                    <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-2 rounded-xl">
+                      Lecture
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Student Table Card -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <!-- Filter & Submit Top Bar -->
+              <div class="p-4 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-slate-50/50">
+                <div class="relative w-full sm:w-72">
+                  <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                  <input type="text" id="student-search" oninput="filterStudents()" placeholder="Search students by name, ID or Dept..."
+                    class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+                </div>
+
+                <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end">
+                  <span id="marked-counter" class="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-2 rounded-xl border border-slate-200/60">
+                    0 of 6 selected
+                  </span>
+
+                  <button id="submit-attendance-btn" onclick="submitAttendance()"
+                    class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-xl text-xs font-bold transition-all shadow-md shadow-brand-500/20 flex items-center space-x-2 active:scale-95">
+                    <i data-lucide="check-circle" class="w-4 h-4"></i>
+                    <span>Submit Attendance</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Student Rows -->
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                      <th class="px-6 py-3.5">Student</th>
+                      <th class="px-6 py-3.5">ID</th>
+                      <th class="px-6 py-3.5">Department</th>
+                      <th class="px-6 py-3.5 text-center">Status Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="student-table-body" class="divide-y divide-slate-100">
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- ================= TAB 3: VIEW HISTORICAL RECORDS ================= -->
+          <div id="tab-records" class="tab-content hidden space-y-6">
+
+            <!-- Print Header (Visible only when printing to PDF) -->
+            <div class="print-only text-center pb-4 border-b border-slate-300">
+              <h1 class="text-xl font-bold">Nexus University - Official Attendance Audit Log</h1>
+              <p class="text-xs text-slate-600">Generated on: <span class="current-date-print"></span> &bull; Verified Academic Records</p>
+            </div>
+
+            <!-- Header with Export & Audit Actions -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm no-print">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Historical Attendance Records</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Permanent relational audit logs with teacher correction approval & multi-format export.</p>
+              </div>
+
+              <div class="flex items-center space-x-2">
+                <span id="records-counter-badge" class="text-xs text-brand-700 bg-brand-50 font-bold px-3 py-1.5 rounded-xl border border-brand-100">
+                  Total: 6 records
+                </span>
+
+                <!-- Export Excel / CSV -->
+                <button onclick="exportToCSV()" title="Download as Excel/CSV"
+                  class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-1.5 rounded-xl transition-colors flex items-center space-x-1.5 active:scale-95">
+                  <i data-lucide="sheet" class="w-3.5 h-3.5"></i>
+                  <span>Export Excel</span>
+                </button>
+
+                <!-- Export PDF / Print -->
+                <button onclick="exportToPDF()" title="Print or Save as PDF"
+                  class="bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 text-xs font-semibold px-3 py-1.5 rounded-xl transition-colors flex items-center space-x-1.5 active:scale-95">
+                  <i data-lucide="printer" class="w-3.5 h-3.5"></i>
+                  <span>Print / PDF</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Table Card -->
+            <div id="records-table-card" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <!-- Filter Bar -->
+              <div class="p-4 border-b border-slate-100 flex flex-wrap gap-3 items-center bg-slate-50/50 no-print">
+                <div class="flex items-center space-x-2">
+                  <span class="text-xs font-semibold text-slate-500">Date:</span>
+                  <input type="date" id="records-filter-date" onchange="applyRecordsFilter()"
+                    class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs text-slate-600 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                </div>
+
+                <select id="records-filter-dept" onchange="applyRecordsFilter()"
+                  class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs text-slate-600 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                  <option value="All">All Departments</option>
+                  <option value="Computer Science">Computer Science</option>
+                  <option value="Data Science">Data Science</option>
+                  <option value="Information Tech">Information Tech</option>
+                  <option value="Software Eng">Software Eng</option>
+                </select>
+
+                <select id="records-filter-status" onchange="applyRecordsFilter()"
+                  class="px-3 py-1.5 border border-slate-200 rounded-xl text-xs text-slate-600 bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                  <option value="All">All Statuses</option>
+                  <option value="Present">Present</option>
+                  <option value="Absent">Absent</option>
+                  <option value="Late">Late</option>
+                  <option value="Excused">Excused (On Leave)</option>
+                </select>
+
+                <button onclick="resetRecordsFilter()" title="Reset all filters"
+                  class="text-xs font-semibold text-slate-500 hover:text-slate-800 bg-white border border-slate-200 px-3 py-1.5 rounded-xl transition-colors hover:bg-slate-50 flex items-center space-x-1 shadow-2xs">
+                  <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                  <span>Reset Filters</span>
+                </button>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                      <th class="px-6 py-3.5">Record ID</th>
+                      <th class="px-6 py-3.5">Date & Time</th>
+                      <th class="px-6 py-3.5">Student Name</th>
+                      <th class="px-6 py-3.5">Department</th>
+                      <th class="px-6 py-3.5">Subject</th>
+                      <th class="px-6 py-3.5 text-center">Status</th>
+                      <th class="px-6 py-3.5 text-center no-print">Correction Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="records-table-body" class="divide-y divide-slate-100">
+                    <!-- Populated dynamically via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- ================= TAB 4: LEAVE MANAGEMENT ================= -->
+          <div id="tab-leaves" class="tab-content hidden space-y-6">
+
+            <!-- Leave Management Header -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+              <div>
+                <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Leave Management & Approvals</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Students can submit leave requests with medical/official reason; faculty approves or rejects.</p>
+              </div>
+
+              <div>
+                <button onclick="openApplyLeaveModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
+                  <i data-lucide="calendar-plus" class="w-4 h-4"></i>
+                  <span>Apply for Leave</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Leave KPI Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-4">
+              <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <span class="text-xs text-slate-400 font-medium">Total Applications</span>
+                <span id="leave-kpi-total" class="text-2xl font-black text-slate-900 block mt-1">3</span>
+              </div>
+              <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <span class="text-xs text-amber-500 font-medium">Pending Review</span>
+                <span id="leave-kpi-pending" class="text-2xl font-black text-amber-600 block mt-1">2</span>
+              </div>
+              <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <span class="text-xs text-emerald-500 font-medium">Approved Leaves</span>
+                <span id="leave-kpi-approved" class="text-2xl font-black text-emerald-600 block mt-1">1</span>
+              </div>
+              <div class="bg-white rounded-2xl p-4 border border-slate-200/80 shadow-sm">
+                <span class="text-xs text-rose-500 font-medium">Declined</span>
+                <span id="leave-kpi-rejected" class="text-2xl font-black text-rose-600 block mt-1">0</span>
+              </div>
+            </div>
+
+            <!-- Leave Applications Table -->
+            <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+              <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Leave Applications Roster</h3>
+                <span class="text-xs text-slate-400">Faculty Review Required</span>
+              </div>
+
+              <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                      <th class="px-6 py-3.5">Application ID</th>
+                      <th class="px-6 py-3.5">Student</th>
+                      <th class="px-6 py-3.5">Leave Type</th>
+                      <th class="px-6 py-3.5">Dates Duration</th>
+                      <th class="px-6 py-3.5">Reason Note</th>
+                      <th class="px-6 py-3.5 text-center">Status</th>
+                      <th class="px-6 py-3.5 text-center">Faculty Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leaves-table-body" class="divide-y divide-slate-100">
+                    <!-- Dynamic rendering -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+
+
+          <!-- ================= TAB 5: SYSTEM ARCHITECTURE ================= -->
+          <div id="tab-architecture" class="tab-content hidden space-y-6">
+
+            <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+              <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">System Infrastructure & Database Topology</h2>
+              <p class="text-xs text-slate-500 mt-1">High-performance polyglot persistence architecture, distributed caching layers, and transaction protocols.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              <!-- Primary MongoDB Database -->
+              <div class="bg-white rounded-2xl border border-emerald-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
+                    <i data-lucide="database" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Primary DB Active</span>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">MongoDB Database (Mongoose ODM)</h3>
+                  <p class="text-xs text-slate-500 mt-1">High-speed NoSQL document database storing students, accounts, attendance sessions, and leave records.</p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+                  <div class="flex justify-between"><span>Database Name:</span> <strong class="text-slate-800">nexus_attendance</strong></div>
+                  <div class="flex justify-between"><span>Default Port:</span> <strong class="text-slate-800">27017</strong></div>
+                  <div class="flex justify-between"><span>Document Format:</span> <strong class="text-slate-800">BSON / JSON</strong></div>
+                </div>
+              </div>
+
+              <!-- MongoDB Collections Overview -->
+              <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
+                    <i data-lucide="layers" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-200">4 Collections</span>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Mongoose Data Models</h3>
+                  <p class="text-xs text-slate-500 mt-1">Strict typed schemas for reliable query execution, indexing and indexing consistency.</p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+                  <div class="flex justify-between"><span>Collections:</span> <strong class="text-slate-800">users, students, attendancerecords, leaverequests</strong></div>
+                  <div class="flex justify-between"><span>Indexing:</span> <strong class="text-slate-800">Unique Email & ID</strong></div>
+                </div>
+              </div>
+
+              <!-- Real-time API Gateway -->
+              <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+                <div class="flex items-center justify-between">
+                  <div class="p-2.5 bg-brand-50 text-brand-600 rounded-xl">
+                    <i data-lucide="zap" class="w-5 h-5"></i>
+                  </div>
+                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Live Port 5001</span>
+                </div>
+                <div>
+                  <h3 class="text-sm font-bold text-slate-900">Express REST Gateway</h3>
+                  <p class="text-xs text-slate-500 mt-1">REST API endpoints bridging browser clients with MongoDB query optimization.</p>
+                </div>
+                <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
+                  <div class="flex justify-between"><span>API Base URL:</span> <strong class="text-slate-800">http://localhost:5001</strong></div>
+                  <div class="flex justify-between"><span>Security:</span> <strong class="text-slate-800">CORS & Role Auth</strong></div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL 1: ADD STUDENT MODAL ==================== -->
+  <div id="add-student-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6">
+      
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-brand-50 text-brand-600 rounded-2xl">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 tracking-tight">Add New Student</h3>
+            <p class="text-xs text-slate-500">Register a new student to the attendance roster</p>
+          </div>
+        </div>
+        <button onclick="closeAddStudentModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="add-student-form" onsubmit="handleAddStudent(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student Full Name *</label>
+          <div class="relative">
+            <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="text" id="new-student-name" required placeholder="e.g. John Doe"
+              class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student ID *</label>
+            <div class="relative">
+              <i data-lucide="hash" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="new-student-id" required placeholder="STU007"
+                class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 font-mono">
+            </div>
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Department *</label>
+            <select id="new-student-dept" required
+              class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 font-medium">
+              <option value="Computer Science">Computer Science</option>
+              <option value="Data Science">Data Science</option>
+              <option value="Information Tech">Information Tech</option>
+              <option value="Software Eng">Software Eng</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">University Email</label>
+          <div class="relative">
+            <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+            <input type="email" id="new-student-email" placeholder="john.doe@university.edu"
+              class="w-full pl-10 pr-4 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30">
+          </div>
+        </div>
+
+        <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeAddStudentModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50 transition-colors">
+            Cancel
+          </button>
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-md shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Save Student</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL 2: ATTENDANCE CORRECTION MODAL ==================== -->
+  <div id="correction-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-5">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-amber-50 text-amber-600 rounded-2xl">
+            <i data-lucide="shield-alert" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 tracking-tight">Correct Attendance Record</h3>
+            <p class="text-xs text-slate-500">Teacher/Admin authorization required for audit modification</p>
+          </div>
+        </div>
+        <button onclick="closeCorrectionModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="correction-form" onsubmit="handleCorrectionSubmit(event)" class="space-y-4 text-xs">
+        <input type="hidden" id="corr-record-id">
+
+        <div class="bg-slate-50 p-3.5 rounded-2xl space-y-1.5 border border-slate-200/60">
+          <div class="flex justify-between text-slate-500">
+            <span>Student Name:</span>
+            <strong id="corr-student-name" class="text-slate-900">Alice Smith</strong>
+          </div>
+          <div class="flex justify-between text-slate-500">
+            <span>Date & Subject:</span>
+            <strong id="corr-meta" class="text-slate-900">2026-11-18 &bull; CS301</strong>
+          </div>
+          <div class="flex justify-between text-slate-500">
+            <span>Current Status:</span>
+            <span id="corr-current-status" class="font-bold text-rose-600">Absent</span>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">New Corrected Status *</label>
+          <select id="corr-new-status" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-bold focus:ring-2 focus:ring-brand-500/20">
+            <option value="Present">Present (Verified In Class)</option>
+            <option value="Late">Late (Verified Delay)</option>
+            <option value="Excused">Excused (Medical / Approved Leave)</option>
+            <option value="Absent">Absent</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason for Correction *</label>
+          <textarea id="corr-reason" required rows="2" placeholder="e.g. Medical certificate verified by Faculty / Scanner delay"
+            class="w-full p-3 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeCorrectionModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
+            <i data-lucide="check-check" class="w-4 h-4"></i>
+            <span>Apply Correction</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== MODAL 3: APPLY FOR LEAVE MODAL ==================== -->
+  <div id="apply-leave-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-5">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <div class="flex items-center space-x-3">
+          <div class="p-2.5 bg-brand-50 text-brand-600 rounded-2xl">
+            <i data-lucide="calendar-plus" class="w-5 h-5"></i>
+          </div>
+          <div>
+            <h3 class="text-base font-bold text-slate-900 tracking-tight">Submit Leave Application</h3>
+            <p class="text-xs text-slate-500">Request formal leave approval from class faculty</p>
+          </div>
+        </div>
+        <button onclick="closeApplyLeaveModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="apply-leave-form" onsubmit="handleLeaveSubmit(event)" class="space-y-4 text-xs">
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Applicant Student</label>
+          <select id="leave-student-select" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
+            <!-- Dynamically populated -->
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Leave Type *</label>
+          <select id="leave-type" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
+            <option value="Medical / Sick Leave">Medical / Sick Leave</option>
+            <option value="Family Emergency">Family Emergency</option>
+            <option value="Academic Duty / Hackathon">Academic Duty / Hackathon / Conference</option>
+            <option value="Casual Personal Leave">Casual Personal Leave</option>
+          </select>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">From Date *</label>
+            <input type="date" id="leave-start-date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
+          </div>
+          <div>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">To Date *</label>
+            <input type="date" id="leave-end-date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason & Details *</label>
+          <textarea id="leave-reason" required rows="2" placeholder="Explain reason for leave and attach medical proof if required..."
+            class="w-full p-3 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeApplyLeaveModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
+            Cancel
+          </button>
+          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
+            <i data-lucide="send" class="w-4 h-4"></i>
+            <span>Submit Application</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ==================== JAVASCRIPT APPLICATION CORE ==================== -->
+  <script>
+    // --- 1. DATA STATE ---
+    let currentUser = null;
+
+    let students = [
+      { id: 'STU001', name: 'Alice Smith', department: 'Computer Science', email: 'alice.smith@university.edu', avatarColor: 'bg-emerald-600', attended: 48, total: 52 },
+      { id: 'STU002', name: 'Bob Jones', department: 'Computer Science', email: 'bob.jones@university.edu', avatarColor: 'bg-blue-600', attended: 36, total: 52 },
+      { id: 'STU003', name: 'Charlie Brown', department: 'Information Tech', email: 'charlie.b@university.edu', avatarColor: 'bg-purple-600', attended: 44, total: 52 },
+      { id: 'STU004', name: 'Diana Prince', department: 'Data Science', email: 'diana.p@university.edu', avatarColor: 'bg-pink-600', attended: 50, total: 52 },
+      { id: 'STU005', name: 'Ethan Hunt', department: 'Software Eng', email: 'ethan.h@university.edu', avatarColor: 'bg-amber-600', attended: 46, total: 52 },
+      { id: 'STU006', name: 'Fiona Gallagher', department: 'Computer Science', email: 'fiona.g@university.edu', avatarColor: 'bg-indigo-600', attended: 34, total: 52 },
+    ];
+
+    let records = [
+      { id: 1, date: '2026-11-18', time: '09:05 AM', student: 'Alice Smith', department: 'Computer Science', subject: 'CS-301: Data Structures', status: 'Present' },
+      { id: 2, date: '2026-11-18', time: '09:25 AM', student: 'Bob Jones', department: 'Computer Science', subject: 'CS-301: Data Structures', status: 'Late', lateNote: 'Late +25m' },
+      { id: 3, date: '2026-11-18', time: '09:00 AM', student: 'Charlie Brown', department: 'Information Tech', subject: 'CS-302: Database Systems', status: 'Present' },
+      { id: 4, date: '2026-11-17', time: '09:12 AM', student: 'Diana Prince', department: 'Data Science', subject: 'CS-303: Computer Networks', status: 'Present' },
+      { id: 5, date: '2026-11-17', time: '09:00 AM', student: 'Ethan Hunt', department: 'Software Eng', subject: 'CS-304: Software Engineering', status: 'Present' },
+      { id: 6, date: '2026-11-16', time: '09:00 AM', student: 'Fiona Gallagher', department: 'Computer Science', subject: 'CS-301: Data Structures', status: 'Absent' },
+    ];
+
+    let leaveRequests = [
+      { id: 'LV-101', studentId: 'STU001', studentName: 'Alice Smith', department: 'Computer Science', type: 'Medical / Sick Leave', startDate: '2026-11-19', endDate: '2026-11-20', reason: 'Viral fever, doctor prescribed rest.', status: 'Pending' },
+      { id: 'LV-102', studentId: 'STU003', studentName: 'Charlie Brown', department: 'Information Tech', type: 'Academic Duty / Hackathon', startDate: '2026-11-21', endDate: '2026-11-22', reason: 'National collegiate hackathon event.', status: 'Pending' },
+      { id: 'LV-100', studentId: 'STU004', studentName: 'Diana Prince', department: 'Data Science', type: 'Family Emergency', startDate: '2026-11-10', endDate: '2026-11-12', reason: 'Family emergency travel.', status: 'Approved' },
+    ];
+
+    let attendanceState = {}; // Key: student.id, Value: { status: 'present'|'absent'|'late', time: '09:15 AM' }
+    let currentFilteredRecords = null;
+
+    // --- 2. AUTHENTICATION & MULTI-ROLE LOGIC ---
+    function checkAuth() {
+      const savedUser = localStorage.getItem('nexus_user');
+      if (savedUser) {
+        try {
+          currentUser = JSON.parse(savedUser);
+          showApp();
+        } catch (e) {
+          showLogin();
+        }
+      } else {
+        showLogin();
+      }
+    }
+
+    function showLogin() {
+      document.getElementById('login-screen').classList.remove('hidden');
+      document.getElementById('dashboard-app').classList.add('hidden');
+      lucide.createIcons();
+    }
+
+    function showApp() {
+      document.getElementById('login-screen').classList.add('hidden');
+      document.getElementById('dashboard-app').classList.remove('hidden');
+
+      // Update User Profile in Navigation & Sidebar
+      document.getElementById('sidebar-user-name').textContent = currentUser.name || 'Admin User';
+      document.getElementById('sidebar-user-role').textContent = currentUser.role || 'Administrator';
+      document.getElementById('welcome-user-name').textContent = currentUser.name || 'Admin User';
+      document.getElementById('user-avatar').textContent = (currentUser.name || 'A').charAt(0).toUpperCase();
+
+      const roleSwitcher = document.getElementById('global-role-switcher');
+      if (roleSwitcher) roleSwitcher.value = currentUser.role || 'Administrator';
+
+      applyRolePermissions();
+      renderStudents(students);
+      renderRecords(records);
+      renderStudentAnalytics('all');
+      renderLeaveRequests();
+      initChart();
+      lucide.createIcons();
+      syncDataFromBackend();
+    }
+
+    async function syncDataFromBackend() {
+      try {
+        const [resStudents, resRecords, resLeaves] = await Promise.allSettled([
+          fetch('http://localhost:5001/api/students').then(r => r.json()),
+          fetch('http://localhost:5001/api/attendance').then(r => r.json()),
+          fetch('http://localhost:5001/api/leaves').then(r => r.json())
+        ]);
+
+        if (resStudents.status === 'fulfilled' && resStudents.value && resStudents.value.students?.length) {
+          students = resStudents.value.students;
+          renderStudents(students);
+          renderStudentAnalytics('all');
+        }
+
+        if (resRecords.status === 'fulfilled' && resRecords.value && resRecords.value.records?.length) {
+          records = resRecords.value.records.map(r => ({
+            id: r.recordId || r.id,
+            date: r.date,
+            time: r.time,
+            student: r.student,
+            department: r.department,
+            subject: r.subject,
+            status: r.status,
+            corrected: r.corrected,
+            correctionReason: r.correctionReason
+          }));
+          renderRecords(records);
+        }
+
+        if (resLeaves.status === 'fulfilled' && resLeaves.value && resLeaves.value.leaves?.length) {
+          leaveRequests = resLeaves.value.leaves;
+          renderLeaveRequests();
+        }
+      } catch (e) {}
+    }
+
+    function applyRolePermissions() {
+      const role = currentUser.role || 'Administrator';
+
+      // Hide or show faculty/admin elements
+      const facultyEls = document.querySelectorAll('.role-faculty');
+      const adminEls = document.querySelectorAll('.role-admin');
+      const studentBanner = document.getElementById('student-kpi-banner');
+
+      if (role === 'Student') {
+        facultyEls.forEach(el => el.classList.add('hidden'));
+        adminEls.forEach(el => el.classList.add('hidden'));
+        if (studentBanner) studentBanner.classList.remove('hidden');
+        document.getElementById('welcome-user-subtitle').textContent = 'Review your individual attendance record, subject eligibility, and submit leaves.';
+      } else if (role === 'Teacher') {
+        facultyEls.forEach(el => el.classList.remove('hidden'));
+        adminEls.forEach(el => el.classList.add('hidden'));
+        if (studentBanner) studentBanner.classList.add('hidden');
+        document.getElementById('welcome-user-subtitle').textContent = 'Daily student attendance recording, leave request verification & records correction.';
+      } else {
+        // Admin: Full access
+        facultyEls.forEach(el => el.classList.remove('hidden'));
+        adminEls.forEach(el => el.classList.remove('hidden'));
+        if (studentBanner) studentBanner.classList.add('hidden');
+        document.getElementById('welcome-user-subtitle').textContent = 'Enterprise attendance oversight, analytics breakdown, and infrastructure topology.';
+      }
+    }
+
+    function handleRoleSwitchChange(newRole) {
+      if (!currentUser) currentUser = {};
+      currentUser.role = newRole;
+      if (newRole === 'Student') {
+        currentUser.name = 'Alice Smith';
+        currentUser.id = 'STU001';
+      } else if (newRole === 'Teacher') {
+        currentUser.name = 'Prof. Alan Turing';
+        currentUser.id = 'TCH101';
+      } else {
+        currentUser.name = 'Dr. Sarah Jenkins';
+        currentUser.id = 'EMP001';
+      }
+      localStorage.setItem('nexus_user', JSON.stringify(currentUser));
+      showToast(`Switched active view to ${newRole}`, 'info');
+      showApp();
+    }
+
+    function fillRoleCredentials(roleKey) {
+      toggleAuthMode('login');
+
+      if (roleKey === 'admin') {
+        document.getElementById('login-email').value = 'admin@nexus.com';
+        document.getElementById('login-password').value = 'admin123';
+      } else if (roleKey === 'teacher') {
+        document.getElementById('login-email').value = 'teacher@nexus.com';
+        document.getElementById('login-password').value = 'teacher123';
+      } else {
+        document.getElementById('login-email').value = 'student@nexus.com';
+        document.getElementById('login-password').value = 'student123';
+      }
+
+      showToast(`Filled ${roleKey.toUpperCase()} credentials into form. Click 'Sign In' below to login.`, 'info');
+      // No auto-login! User must deliberately click 'Sign In'
+    }
+
+    function toggleAuthMode(mode) {
+      const loginTab = document.getElementById('auth-tab-login');
+      const regTab = document.getElementById('auth-tab-register');
+      const loginForm = document.getElementById('login-form');
+      const regForm = document.getElementById('register-form');
+
+      if (mode === 'register') {
+        regTab.className = 'flex-1 py-2 rounded-xl bg-white text-emerald-700 shadow-sm transition-all text-center font-bold';
+        loginTab.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition-all text-center';
+        loginForm.classList.add('hidden');
+        regForm.classList.remove('hidden');
+      } else {
+        loginTab.className = 'flex-1 py-2 rounded-xl bg-white text-brand-700 shadow-sm transition-all text-center font-bold';
+        regTab.className = 'flex-1 py-2 rounded-xl text-slate-500 hover:text-slate-800 transition-all text-center';
+        loginForm.classList.remove('hidden');
+        regForm.classList.add('hidden');
+      }
+      lucide.createIcons();
+    }
+
+    async function handleRegisterSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const role = document.getElementById('reg-role').value;
+      const department = document.getElementById('reg-dept').value;
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value.trim();
+      const btn = document.getElementById('reg-submit-btn');
+
+      if (!name || !email || !password) return;
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>Creating Account...</span>`;
+
+      const idPrefix = role === 'Teacher' ? 'TCH' : 'STU';
+      const generatedId = idPrefix + String(Math.floor(100 + Math.random() * 900));
+
+      const newUser = {
+        id: generatedId,
+        name,
+        role,
+        department,
+        email,
+        password
+      };
+
+      // If registered as student, add to roster
+      if (role === 'Student') {
+        const colors = ['bg-indigo-600', 'bg-emerald-600', 'bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-amber-600'];
+        const avatarColor = colors[students.length % colors.length];
+        students.push({
+          id: generatedId,
+          name,
+          department,
+          email,
+          avatarColor,
+          attended: 0,
+          total: 0
+        });
+      }
+
+      // Backend Sync
+      try {
+        await fetch('http://localhost:5001/api/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newUser)
+        }).catch(() => {});
+      } catch (err) {}
+
+      currentUser = newUser;
+      localStorage.setItem('nexus_user', JSON.stringify(newUser));
+      showApp();
+      showToast(`🎉 Welcome ${name}! Your ${role} account has been created.`, 'success');
+
+      btn.disabled = false;
+      btn.innerHTML = `<i data-lucide="user-plus" class="w-4 h-4"></i><span>Create Account & Sign In</span>`;
+      lucide.createIcons();
+    }
+
+    async function handleLoginSubmit(e) {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+      const btn = document.getElementById('login-submit-btn');
+
+      btn.disabled = true;
+      btn.innerHTML = `<span>Signing In...</span>`;
+
+      try {
+        let user = null;
+        try {
+          const res = await fetch('http://localhost:5001/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          if (res.ok) {
+            const data = await res.json();
+            user = data.user;
+          }
+        } catch (err) {}
+
+        if (!user) {
+          if (email.includes('student')) {
+            user = { id: 'STU001', name: 'Alice Smith', email, role: 'Student', department: 'Computer Science' };
+          } else if (email.includes('teacher')) {
+            user = { id: 'TCH101', name: 'Prof. Alan Turing', email, role: 'Teacher', department: 'Computer Science' };
+          } else {
+            user = { id: 'EMP001', name: 'Dr. Sarah Jenkins', email, role: 'Administrator', department: 'Admin Office' };
+          }
+        }
+
+        currentUser = user;
+        localStorage.setItem('nexus_user', JSON.stringify(user));
+        showApp();
+        showToast(`Welcome back, ${user.name}! Signed in successfully.`, 'success');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i data-lucide="log-in" class="w-4 h-4"></i><span>Sign In to Dashboard</span>`;
+        lucide.createIcons();
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('nexus_user');
+      currentUser = null;
+      showLogin();
+      showToast('You have been signed out safely.', 'info');
+    }
+
+    function togglePasswordVisibility() {
+      const pass = document.getElementById('login-password');
+      const eye = document.getElementById('toggle-eye');
+      if (pass.type === 'password') {
+        pass.type = 'text';
+        eye.setAttribute('data-lucide', 'eye-off');
+      } else {
+        pass.type = 'password';
+        eye.setAttribute('data-lucide', 'eye');
+      }
+      lucide.createIcons();
+    }
+
+    // --- 3. CHART & PERIOD TOGGLE (DAILY / WEEKLY / MONTHLY) ---
+    let myChartInstance = null;
+    let currentChartPeriod = 'weekly';
+
+    const chartDataPresets = {
+      daily: {
+        title: "Daily Hourly Attendance Trend (Today)",
+        subtitle: "Real-time student participation across lecture time periods",
+        labels: ['09:00 AM', '10:30 AM', '12:00 PM', '02:00 PM', '03:30 PM'],
+        present: [48, 46, 44, 42, 40],
+        absent: [2, 4, 6, 8, 10]
+      },
+      weekly: {
+        title: "Weekly Attendance Trend",
+        subtitle: "Interactive distribution of Present vs Absent students",
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+        present: [45, 42, 48, 46, 39],
+        absent: [5, 8, 2, 4, 11]
+      },
+      monthly: {
+        title: "Monthly Attendance Overview (November)",
+        subtitle: "Aggregated 4-week student presence across all departments",
+        labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+        present: [210, 225, 218, 230],
+        absent: [25, 15, 22, 12]
+      }
+    };
+
+    function switchChartPeriod(period) {
+      currentChartPeriod = period;
+
+      ['daily', 'weekly', 'monthly'].forEach(p => {
+        const btn = document.getElementById('chart-btn-' + p);
+        if (btn) {
+          if (p === period) {
+            btn.className = 'px-2.5 py-1 rounded-lg bg-white shadow-xs text-brand-700 font-bold transition-all';
+          } else {
+            btn.className = 'px-2.5 py-1 rounded-lg text-slate-500 hover:text-slate-800 transition-all';
+          }
+        }
+      });
+
+      const titleEl = document.getElementById('chart-trend-title');
+      const subtitleEl = document.getElementById('chart-trend-subtitle');
+      if (titleEl) titleEl.textContent = chartDataPresets[period].title;
+      if (subtitleEl) subtitleEl.textContent = chartDataPresets[period].subtitle;
+
+      if (myChartInstance) {
+        myChartInstance.data.labels = chartDataPresets[period].labels;
+        myChartInstance.data.datasets[0].data = chartDataPresets[period].present;
+        myChartInstance.data.datasets[1].data = chartDataPresets[period].absent;
+        myChartInstance.update();
+      }
+      showToast(`Switched chart to ${period.toUpperCase()} view`, 'info');
+    }
+
+    function initChart() {
+      const canvas = document.getElementById('attendanceChart');
+      if (!canvas) return;
+
+      if (myChartInstance) {
+        myChartInstance.destroy();
+      }
+
+      const activePreset = chartDataPresets[currentChartPeriod] || chartDataPresets.weekly;
+      const ctx = canvas.getContext('2d');
+      myChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: activePreset.labels,
+          datasets: [
+            {
+              label: 'Present Students',
+              data: activePreset.present,
+              backgroundColor: '#10b981',
+              borderRadius: 6,
+              barPercentage: 0.6,
+              categoryPercentage: 0.5
+            },
+            {
+              label: 'Absent Students',
+              data: activePreset.absent,
+              backgroundColor: '#f43f5e',
+              borderRadius: 6,
+              barPercentage: 0.6,
+              categoryPercentage: 0.5
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'top',
+              align: 'end',
+              labels: {
+                boxWidth: 10,
+                boxHeight: 10,
+                usePointStyle: true,
+                pointStyle: 'circle',
+                font: { family: 'Plus Jakarta Sans', size: 11, weight: '600' }
+              }
+            },
+            tooltip: {
+              backgroundColor: '#0f172a',
+              titleFont: { family: 'Plus Jakarta Sans', size: 12, weight: 'bold' },
+              bodyFont: { family: 'Plus Jakarta Sans', size: 11 },
+              padding: 10,
+              cornerRadius: 10,
+              displayColors: true
+            }
+          },
+          scales: {
+            x: {
+              grid: { display: false },
+              ticks: { font: { family: 'Plus Jakarta Sans', size: 11, weight: '500' }, color: '#64748b' }
+            },
+            y: {
+              border: { dash: [4, 4], display: false },
+              grid: { color: '#f1f5f9' },
+              ticks: { font: { family: 'Plus Jakarta Sans', size: 11 }, color: '#94a3b8' }
+            }
+          }
+        }
+      });
+    }
+
+    // --- 4. STUDENT ANALYTICS & SEMESTER PERFORMANCE ---
+    function renderStudentAnalytics(filter = 'all') {
+      const tbody = document.getElementById('analytics-table-body');
+      if (!tbody) return;
+
+      let list = students.map(s => {
+        const rate = Math.round((s.attended / s.total) * 100);
+        return { ...s, rate };
+      });
+
+      if (filter === 'risk') {
+        list = list.filter(s => s.rate < 75);
+      } else if (filter === 'top') {
+        list = list.filter(s => s.rate >= 90);
+      }
+
+      if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-slate-400">No students match this performance filter.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = list.map(s => {
+        const isEligible = s.rate >= 75;
+        const badgeColor = isEligible ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200';
+        const badgeText = isEligible ? '✓ Eligible for Exams' : '⚠️ Shortage (< 75%)';
+        const progressBarColor = s.rate >= 75 ? 'bg-emerald-500' : 'bg-rose-500';
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-6 py-3.5">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl ${s.avatarColor} text-white font-bold flex items-center justify-center text-xs">
+                  ${s.name.charAt(0)}
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 text-xs">${s.name}</p>
+                  <p class="text-[10px] text-slate-400 font-mono">${s.id}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-3.5 font-medium text-slate-600">${s.department}</td>
+            <td class="px-6 py-3.5">
+              <div class="w-36 space-y-1">
+                <div class="flex justify-between text-[11px] font-bold">
+                  <span>${s.rate}%</span>
+                  <span class="text-slate-400 text-[10px]">${s.attended}/${s.total}</span>
+                </div>
+                <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+                  <div class="${progressBarColor} h-1.5 rounded-full" style="width: ${s.rate}%"></div>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-3.5 font-mono text-slate-600">${s.attended} lectures</td>
+            <td class="px-6 py-3.5 text-center">
+              <span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold border ${badgeColor}">
+                ${badgeText}
+              </span>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function filterStudentAnalytics(val) {
+      renderStudentAnalytics(val);
+    }
+
+    // --- 5. MARK ATTENDANCE LOGIC ---
+    function renderStudents(list) {
+      const tbody = document.getElementById('student-table-body');
+      if (!tbody) return;
+
+      tbody.innerHTML = list.map(student => {
+        const currentRec = attendanceState[student.id];
+        const currentStatus = currentRec ? currentRec.status : null;
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors" id="row-${student.id}">
+            <td class="px-6 py-3.5">
+              <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-xl ${student.avatarColor} text-white font-bold flex items-center justify-center text-xs shadow-sm">
+                  ${student.name.charAt(0)}
+                </div>
+                <div>
+                  <p class="font-bold text-slate-800 text-xs">${student.name}</p>
+                  <p class="text-[11px] text-slate-400">${student.email}</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-6 py-3.5 font-mono text-slate-500 font-medium">${student.id}</td>
+            <td class="px-6 py-3.5">
+              <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold bg-slate-100 text-slate-600">
+                ${student.department}
+              </span>
+            </td>
+            <td class="px-6 py-3.5 text-center">
+              <div class="inline-flex items-center p-1 bg-slate-100 rounded-xl space-x-1">
+                <button type="button" onclick="setStudentStatus('${student.id}', 'present')"
+                  class="status-btn-present px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${currentStatus === 'present' ? 'bg-emerald-500 text-white shadow-sm' : 'text-slate-600 hover:text-emerald-700 hover:bg-emerald-50'}">
+                  ✓ Present
+                </button>
+                <button type="button" onclick="setStudentStatus('${student.id}', 'absent')"
+                  class="status-btn-absent px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${currentStatus === 'absent' ? 'bg-rose-500 text-white shadow-sm' : 'text-slate-600 hover:text-rose-700 hover:bg-rose-50'}">
+                  ✕ Absent
+                </button>
+                <button type="button" onclick="setStudentStatus('${student.id}', 'late')"
+                  class="status-btn-late px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${currentStatus === 'late' ? 'bg-amber-500 text-white shadow-sm' : 'text-slate-600 hover:text-amber-700 hover:bg-amber-50'}">
+                  ⏱ Late
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      updateMarkedCounter();
+      populateLeaveStudentDropdown();
+    }
+
+    function setStudentStatus(studentId, status) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      attendanceState[studentId] = { status, time: timeStr };
+      renderStudents(students);
+    }
+
+    function markAllStudents(status) {
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+      students.forEach(s => {
+        attendanceState[s.id] = { status, time: timeStr };
+      });
+      renderStudents(students);
+      showToast(`All students marked as ${status.toUpperCase()}`, 'info');
+    }
+
+    function clearAttendanceSelection() {
+      attendanceState = {};
+      renderStudents(students);
+      showToast('Attendance selection cleared', 'info');
+    }
+
+    function updateMarkedCounter() {
+      const count = Object.keys(attendanceState).length;
+      const el = document.getElementById('marked-counter');
+      if (el) el.textContent = `${count} of ${students.length} selected`;
+    }
+
+    function filterStudents() {
+      const q = document.getElementById('student-search').value.toLowerCase();
+      const filtered = students.filter(s =>
+        s.name.toLowerCase().includes(q) ||
+        s.id.toLowerCase().includes(q) ||
+        s.department.toLowerCase().includes(q)
+      );
+      renderStudents(filtered);
+    }
+
+    async function submitAttendance() {
+      const markedIds = Object.keys(attendanceState);
+      if (markedIds.length === 0) {
+        showToast('Please select attendance for at least one student before submitting!', 'warning');
+        return;
+      }
+
+      const submitBtn = document.getElementById('submit-attendance-btn');
+      const originalHTML = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = `<span>Saving...</span>`;
+
+      const today = new Date().toISOString().split('T')[0];
+      const selectedSubject = document.getElementById('attendance-subject')?.value || 'CS-301: Data Structures';
+      const selectedClass = document.getElementById('attendance-class')?.value || 'Semester 5 - Section A';
+
+      let presentAdd = 0;
+      let absentAdd = 0;
+
+      for (const id of markedIds) {
+        const student = students.find(s => s.id === id);
+        const item = attendanceState[id];
+        const status = item.status.charAt(0).toUpperCase() + item.status.slice(1);
+
+        if (status === 'Present' || status === 'Late') presentAdd++;
+        if (status === 'Absent') absentAdd++;
+
+        // Add to historical records
+        records.unshift({
+          id: records.length + 1,
+          date: today,
+          time: item.time || '09:00 AM',
+          student: student ? student.name : id,
+          department: student ? student.department : 'General',
+          subject: selectedSubject,
+          status: status
+        });
+
+        // Sync to backend API
+        try {
+          fetch('http://localhost:5001/api/attendance/mark', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ employeeId: id, status, subject: selectedSubject, class: selectedClass })
+          }).catch(() => {});
+        } catch (e) {}
+      }
+
+      // Update KPI counters
+      const presEl = document.getElementById('stat-present');
+      const absEl = document.getElementById('stat-absent');
+      if (presEl) presEl.textContent = (parseInt(presEl.textContent) || 42) + presentAdd;
+      if (absEl) absEl.textContent = (parseInt(absEl.textContent) || 8) + absentAdd;
+
+      applyRecordsFilter();
+      renderStudentAnalytics('all');
+      showToast(`✅ Recorded attendance for ${markedIds.length} student(s) in ${selectedSubject}!`, 'success');
+
+      submitBtn.innerHTML = `<span>✓ Submitted!</span>`;
+      submitBtn.classList.remove('bg-brand-600', 'hover:bg-brand-700');
+      submitBtn.classList.add('bg-emerald-600');
+
+      setTimeout(() => {
+        submitBtn.innerHTML = originalHTML;
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('bg-emerald-600');
+        submitBtn.classList.add('bg-brand-600', 'hover:bg-brand-700');
+        lucide.createIcons();
+      }, 2000);
+    }
+
+    // --- 6. HISTORICAL RECORDS & AUDIT CORRECTIONS ---
+    function renderRecords(recordsToDisplay) {
+      currentFilteredRecords = recordsToDisplay;
+      const tbody = document.getElementById('records-table-body');
+      if (!tbody) return;
+
+      const badgeEl = document.getElementById('records-counter-badge');
+      if (badgeEl) badgeEl.textContent = `Total: ${recordsToDisplay.length} of ${records.length} records`;
+
+      if (recordsToDisplay.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No records match the selected filters.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = recordsToDisplay.map(r => {
+        let statusBadge = '';
+        if (r.status === 'Present') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 mr-1.5"></span>Present
+          </span>`;
+        } else if (r.status === 'Absent') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-500 mr-1.5"></span>Absent
+          </span>`;
+        } else if (r.status === 'Late') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 mr-1.5"></span>Late (${r.time || '09:20 AM'})
+          </span>`;
+        } else {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 mr-1.5"></span>Excused (Leave)
+          </span>`;
+        }
+
+        const isCorrected = r.corrected ? `<span class="text-[9px] bg-indigo-50 text-indigo-700 border border-indigo-200 px-1 rounded ml-1 font-mono">Audited</span>` : '';
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-6 py-3.5 font-mono text-slate-400 font-semibold text-xs">#REC-${String(r.id).padStart(3, '0')}</td>
+            <td class="px-6 py-3.5 text-slate-600 font-medium">${r.date} <span class="text-[10px] text-slate-400 block">${r.time || '09:00 AM'}</span></td>
+            <td class="px-6 py-3.5">
+              <span class="font-bold text-slate-800 text-xs">${r.student}</span>
+              ${isCorrected}
+            </td>
+            <td class="px-6 py-3.5 text-slate-500 font-medium">${r.department || 'Computer Science'}</td>
+            <td class="px-6 py-3.5 text-slate-700 font-semibold">${r.subject || 'CS-301: Data Structures'}</td>
+            <td class="px-6 py-3.5 text-center">${statusBadge}</td>
+            <td class="px-6 py-3.5 text-center no-print">
+              <button onclick="openCorrectionModal(${r.id})" class="text-xs font-semibold px-2.5 py-1 rounded-lg text-slate-600 hover:text-brand-600 hover:bg-brand-50 border border-slate-200 transition-colors">
+                Edit
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function applyRecordsFilter() {
+      const dateVal = document.getElementById('records-filter-date').value;
+      const deptVal = document.getElementById('records-filter-dept').value;
+      const statusVal = document.getElementById('records-filter-status').value;
+
+      const filtered = records.filter(r => {
+        if (dateVal && r.date !== dateVal) return false;
+        if (deptVal !== 'All' && r.department !== deptVal) return false;
+        if (statusVal !== 'All' && r.status.toLowerCase() !== statusVal.toLowerCase()) return false;
+        return true;
+      });
+
+      renderRecords(filtered);
+    }
+
+    function resetRecordsFilter() {
+      document.getElementById('records-filter-date').value = '';
+      document.getElementById('records-filter-dept').value = 'All';
+      document.getElementById('records-filter-status').value = 'All';
+      renderRecords(records);
+      showToast('Records filter reset', 'info');
+    }
+
+    // Export to Excel / CSV
+    function exportToCSV() {
+      let csv = 'Record ID,Date,Time,Student Name,Department,Subject,Status\n';
+      const exportList = (currentFilteredRecords && currentFilteredRecords.length > 0) ? currentFilteredRecords : records;
+      exportList.forEach(r => {
+        csv += `${r.id},"${r.date}","${r.time || '09:00 AM'}","${r.student}","${r.department || 'N/A'}","${r.subject || 'N/A'}","${r.status}"\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `attendance-audit-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      showToast(`Exported ${exportList.length} record(s) to Excel/CSV successfully!`, 'success');
+    }
+
+    // Export to PDF / Print Dialog
+    function exportToPDF() {
+      document.querySelectorAll('.current-date-print').forEach(el => el.textContent = new Date().toLocaleDateString());
+      window.print();
+    }
+
+    // Attendance Correction Modal Logic
+    function openCorrectionModal(recordId) {
+      const rec = records.find(r => r.id === recordId);
+      if (!rec) return;
+
+      document.getElementById('corr-record-id').value = rec.id;
+      document.getElementById('corr-student-name').textContent = rec.student;
+      document.getElementById('corr-meta').textContent = `${rec.date} • ${rec.subject || 'General'}`;
+      document.getElementById('corr-current-status').textContent = rec.status;
+      document.getElementById('corr-new-status').value = rec.status;
+      document.getElementById('corr-reason').value = '';
+
+      document.getElementById('correction-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeCorrectionModal() {
+      document.getElementById('correction-modal').classList.add('hidden');
+    }
+
+    function handleCorrectionSubmit(e) {
+      e.preventDefault();
+      const recId = parseInt(document.getElementById('corr-record-id').value);
+      const newStatus = document.getElementById('corr-new-status').value;
+      const reason = document.getElementById('corr-reason').value.trim();
+
+      const rec = records.find(r => r.id === recId);
+      if (rec) {
+        rec.status = newStatus;
+        rec.corrected = true;
+        rec.correctionReason = reason;
+        rec.correctedBy = currentUser ? currentUser.name : 'Faculty';
+
+        // Backend Sync
+        try {
+          fetch('http://localhost:5001/api/attendance/correct', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ recordId: recId, newStatus, reason, correctedBy: rec.correctedBy })
+          }).catch(() => {});
+        } catch (err) {}
+
+        applyRecordsFilter();
+        closeCorrectionModal();
+        showToast(`Record #${recId} corrected to ${newStatus} (${reason})`, 'success');
+      }
+    }
+
+    // --- 7. LEAVE MANAGEMENT LOGIC ---
+    function renderLeaveRequests() {
+      const tbody = document.getElementById('leaves-table-body');
+      if (!tbody) return;
+
+      const total = leaveRequests.length;
+      const pending = leaveRequests.filter(l => l.status === 'Pending').length;
+      const approved = leaveRequests.filter(l => l.status === 'Approved').length;
+      const rejected = leaveRequests.filter(l => l.status === 'Rejected').length;
+
+      document.getElementById('leave-kpi-total').textContent = total;
+      document.getElementById('leave-kpi-pending').textContent = pending;
+      document.getElementById('leave-kpi-approved').textContent = approved;
+      document.getElementById('leave-kpi-rejected').textContent = rejected;
+
+      const navBadge = document.getElementById('nav-leave-badge');
+      if (navBadge) navBadge.textContent = `${pending} Pending`;
+
+      if (leaveRequests.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">No leave applications currently submitted.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = leaveRequests.map(l => {
+        let statusBadge = '';
+        if (l.status === 'Approved') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">✓ Approved</span>`;
+        } else if (l.status === 'Rejected') {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-50 text-rose-700 border border-rose-200">✕ Declined</span>`;
+        } else {
+          statusBadge = `<span class="inline-flex items-center px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-50 text-amber-700 border border-amber-200">⏳ Pending Review</span>`;
+        }
+
+        const actions = l.status === 'Pending' ? `
+          <div class="flex items-center justify-center space-x-1.5">
+            <button onclick="reviewLeave('${l.id}', 'Approved')" class="px-2.5 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+              Approve
+            </button>
+            <button onclick="reviewLeave('${l.id}', 'Rejected')" class="px-2.5 py-1 rounded-lg bg-slate-200 hover:bg-rose-100 hover:text-rose-700 text-slate-700 font-bold text-xs transition-colors">
+              Reject
+            </button>
+          </div>
+        ` : `<span class="text-slate-400 text-[11px]">Reviewed</span>`;
+
+        return `
+          <tr class="hover:bg-slate-50/80 transition-colors">
+            <td class="px-6 py-3.5 font-mono text-slate-500 font-bold">${l.id}</td>
+            <td class="px-6 py-3.5">
+              <span class="font-bold text-slate-800">${l.studentName}</span>
+              <span class="text-[10px] text-slate-400 block">${l.department}</span>
+            </td>
+            <td class="px-6 py-3.5 font-semibold text-slate-700">${l.type}</td>
+            <td class="px-6 py-3.5 text-slate-600">${l.startDate} to ${l.endDate}</td>
+            <td class="px-6 py-3.5 text-slate-500 max-w-xs truncate" title="${l.reason}">${l.reason}</td>
+            <td class="px-6 py-3.5 text-center">${statusBadge}</td>
+            <td class="px-6 py-3.5 text-center">${actions}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function reviewLeave(leaveId, newStatus) {
+      const leave = leaveRequests.find(l => l.id === leaveId);
+      if (leave) {
+        leave.status = newStatus;
+        if (newStatus === 'Approved') {
+          // Automatically add an Excused record for the student
+          records.unshift({
+            id: records.length + 1,
+            date: leave.startDate,
+            time: '09:00 AM',
+            student: leave.studentName,
+            department: leave.department,
+            subject: 'Approved Academic Leave',
+            status: 'Excused'
+          });
+          applyRecordsFilter();
+        }
+        renderLeaveRequests();
+        showToast(`Leave application #${leaveId} has been ${newStatus.toUpperCase()}`, 'success');
+
+        // Sync with backend API
+        try {
+          fetch(`http://localhost:5001/api/leaves/${leaveId}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus, reviewedBy: currentUser?.name || 'Faculty' })
+          }).catch(() => {});
+        } catch (err) {}
+      }
+    }
+
+    function openApplyLeaveModal() {
+      populateLeaveStudentDropdown();
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('leave-start-date').value = today;
+      document.getElementById('leave-end-date').value = today;
+      document.getElementById('leave-reason').value = '';
+      document.getElementById('apply-leave-modal').classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+    function closeApplyLeaveModal() {
+      document.getElementById('apply-leave-modal').classList.add('hidden');
+    }
+
+    function populateLeaveStudentDropdown() {
+      const select = document.getElementById('leave-student-select');
+      if (!select) return;
+      select.innerHTML = students.map(s => `
+        <option value="${s.id}">${s.name} (${s.id}) - ${s.department}</option>
+      `).join('');
+    }
+
+    function handleLeaveSubmit(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('leave-student-select').value;
+      const student = students.find(s => s.id === studentId);
+      const type = document.getElementById('leave-type').value;
+      const startDate = document.getElementById('leave-start-date').value;
+      const endDate = document.getElementById('leave-end-date').value;
+      const reason = document.getElementById('leave-reason').value.trim();
+
+      const newLeave = {
+        id: 'LV-' + Math.floor(100 + Math.random() * 900),
+        studentId,
+        studentName: student ? student.name : 'Student',
+        department: student ? student.department : 'Computer Science',
+        type,
+        startDate,
+        endDate,
+        reason,
+        status: 'Pending'
+      };
+
+      leaveRequests.unshift(newLeave);
+      renderLeaveRequests();
+      closeApplyLeaveModal();
+      showToast(`✅ Leave application submitted for ${newLeave.studentName}!`, 'success');
+
+      try {
+        fetch('http://localhost:5001/api/leaves', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newLeave)
+        }).catch(() => {});
+      } catch (err) {}
+    }
+
+    // --- 8. ADD NEW STUDENT MODAL LOGIC ---
+    function openAddStudentModal() {
+      const modal = document.getElementById('add-student-modal');
+      if (modal) {
+        modal.classList.remove('hidden');
+        const nextNum = students.length + 1;
+        const autoId = 'STU' + String(nextNum).padStart(3, '0');
+        const idInput = document.getElementById('new-student-id');
+        const nameInput = document.getElementById('new-student-name');
+        const emailInput = document.getElementById('new-student-email');
+        if (idInput) idInput.value = autoId;
+        if (nameInput) nameInput.value = '';
+        if (emailInput) emailInput.value = '';
+        if (nameInput) nameInput.focus();
+        lucide.createIcons();
+      }
+    }
+
+    function closeAddStudentModal() {
+      const modal = document.getElementById('add-student-modal');
+      if (modal) modal.classList.add('hidden');
+    }
+
+    function handleAddStudent(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-student-name').value.trim();
+      let id = document.getElementById('new-student-id').value.trim().toUpperCase();
+      const department = document.getElementById('new-student-dept').value;
+      let email = document.getElementById('new-student-email').value.trim();
+
+      if (!name) return;
+      if (!id) id = 'STU' + String(students.length + 1).padStart(3, '0');
+      if (!email) email = name.toLowerCase().replace(/\s+/g, '.') + '@university.edu';
+
+      const colors = ['bg-indigo-600', 'bg-emerald-600', 'bg-blue-600', 'bg-purple-600', 'bg-pink-600', 'bg-amber-600', 'bg-rose-600'];
+      const avatarColor = colors[students.length % colors.length];
+
+      const newStudent = { id, name, department, email, avatarColor, attended: 0, total: 0 };
+      students.push(newStudent);
+
+      renderStudents(students);
+      renderStudentAnalytics('all');
+
+      const statTotal = document.getElementById('stat-total');
+      if (statTotal) {
+        const cur = parseInt(statTotal.textContent) || 50;
+        statTotal.textContent = cur + 1;
+      }
+
+      closeAddStudentModal();
+      showToast(`✅ Student ${name} (${id}) added successfully!`, 'success');
+
+      try {
+        fetch('http://localhost:5001/api/students', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newStudent)
+        }).catch(() => {});
+      } catch (err) {}
+    }
+
+    // --- 9. TAB SWITCHING & TOASTS ---
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeEl = document.getElementById('tab-' + tabId);
+      if (activeEl) activeEl.classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('bg-brand-50', 'text-brand-700', 'shadow-sm', 'border', 'border-brand-100/60');
+        btn.classList.add('text-slate-600');
+      });
+      const activeBtn = document.getElementById('nav-' + tabId);
+      if (activeBtn) {
+        activeBtn.classList.add('bg-brand-50', 'text-brand-700', 'shadow-sm', 'border', 'border-brand-100/60');
+        activeBtn.classList.remove('text-slate-600');
+      }
+
+      lucide.createIcons();
+      if (tabId === 'dashboard') {
+        setTimeout(initChart, 50);
+      }
+    }
+
+    function refreshDashboard() {
+      showToast('Dashboard metrics refreshed from backend', 'info');
+      initChart();
+    }
+
+    function showToast(message, type = 'info') {
+      let toast = document.getElementById('app-toast');
+      if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'app-toast';
+        document.body.appendChild(toast);
+      }
+
+      let colorClass = 'bg-slate-900 text-white';
+      if (type === 'warning') colorClass = 'bg-amber-50 text-amber-900 border border-amber-300 shadow-amber-500/10';
+      if (type === 'success') colorClass = 'bg-emerald-50 text-emerald-900 border border-emerald-300 shadow-emerald-500/10';
+      if (type === 'info') colorClass = 'bg-brand-50 text-brand-900 border border-brand-200 shadow-brand-500/10';
+
+      toast.className = `fixed top-5 right-5 z-50 max-w-md px-4 py-3 rounded-2xl shadow-xl flex items-center space-x-3 text-xs font-semibold transition-all duration-300 transform translate-y-0 opacity-100 ${colorClass}`;
+      toast.innerHTML = `
+        <div class="flex-1">${message}</div>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-700 font-bold ml-2 text-sm">&times;</button>
+      `;
+
+      setTimeout(() => {
+        if (toast) {
+          toast.classList.add('opacity-0', '-translate-y-2');
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 4000);
+    }
+
+    // Initialize application on load
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      checkAuth();
+    });
+    // Fallback if DOM already loaded
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      checkAuth();
+    }
+  </script>
+
+</body>
+
+</html>
