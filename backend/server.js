@@ -449,5 +449,16 @@ app.patch('/api/leaves/:id', async (req, res) => {
   }
 });
 
+const path = require('path');
+
+// ==================== 5. SERVE FRONTEND IN PRODUCTION ====================
+// Enables unified 1-click deployment on Render, Railway, or Heroku
+app.use(express.static(path.join(__dirname, '../')));
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api')) return next();
+  res.sendFile(path.join(__dirname, '../index.html'));
+});
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`🚀 Nexus Attendance Backend running on MongoDB port ${PORT}`));

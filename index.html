@@ -976,7 +976,7 @@
                   <p class="text-xs text-slate-500 mt-1">REST API endpoints bridging browser clients with MongoDB query optimization.</p>
                 </div>
                 <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-                  <div class="flex justify-between"><span>API Base URL:</span> <strong class="text-slate-800">http://localhost:5001</strong></div>
+                  <div class="flex justify-between"><span>API Base URL:</span> <strong id="ui-api-endpoint" class="text-slate-800 font-mono">http://localhost:5001</strong></div>
                   <div class="flex justify-between"><span>Security:</span> <strong class="text-slate-800">CORS & Role Auth</strong></div>
                 </div>
               </div>
@@ -1204,6 +1204,17 @@
 
   <!-- ==================== JAVASCRIPT APPLICATION CORE ==================== -->
   <script>
+    // --- 0. DYNAMIC API CONFIGURATION (PUBLIC HOSTING READY) ---
+    // Works out-of-the-box on localhost, Vercel, Netlify, GitHub Pages, Render & Railway
+    const API_BASE = (function() {
+      if (window.NEXUS_API_BASE) return window.NEXUS_API_BASE.replace(/\/$/, '');
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:5001';
+      }
+      // When hosted publicly on HTTPS without custom backend, use relative path if served fullstack
+      return window.location.origin;
+    })();
+
     // --- 1. DATA STATE ---
     let currentUser = null;
 
@@ -1268,6 +1279,9 @@
       const roleSwitcher = document.getElementById('global-role-switcher');
       if (roleSwitcher) roleSwitcher.value = currentUser.role || 'Administrator';
 
+      const apiEndpointEl = document.getElementById('ui-api-endpoint');
+      if (apiEndpointEl) apiEndpointEl.textContent = API_BASE || window.location.origin;
+
       applyRolePermissions();
       renderStudents(students);
       renderRecords(records);
@@ -1281,9 +1295,9 @@
     async function syncDataFromBackend() {
       try {
         const [resStudents, resRecords, resLeaves] = await Promise.allSettled([
-          fetch('http://localhost:5001/api/students').then(r => r.json()),
-          fetch('http://localhost:5001/api/attendance').then(r => r.json()),
-          fetch('http://localhost:5001/api/leaves').then(r => r.json())
+          fetch(`${API_BASE}/api/students`).then(r => r.json()),
+          fetch(`${API_BASE}/api/attendance`).then(r => r.json()),
+          fetch(`${API_BASE}/api/leaves`).then(r => r.json())
         ]);
 
         if (resStudents.status === 'fulfilled' && resStudents.value && resStudents.value.students?.length) {
@@ -1440,7 +1454,7 @@
 
       // Backend Sync
       try {
-        await fetch('http://localhost:5001/api/register', {
+        await fetch(`${API_BASE}/api/register`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newUser)
@@ -1469,7 +1483,7 @@
       try {
         let user = null;
         try {
-          const res = await fetch('http://localhost:5001/api/login', {
+          const res = await fetch(`${API_BASE}/api/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email, password })
@@ -1847,7 +1861,7 @@
 
         // Sync to backend API
         try {
-          fetch('http://localhost:5001/api/attendance/mark', {
+          fetch(`${API_BASE}/api/attendance/mark`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ employeeId: id, status, subject: selectedSubject, class: selectedClass })
@@ -2015,7 +2029,7 @@
 
         // Backend Sync
         try {
-          fetch('http://localhost:5001/api/attendance/correct', {
+          fetch(`${API_BASE}/api/attendance/correct`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ recordId: recId, newStatus, reason, correctedBy: rec.correctedBy })
@@ -2111,7 +2125,7 @@
 
         // Sync with backend API
         try {
-          fetch(`http://localhost:5001/api/leaves/${leaveId}`, {
+          fetch(`${API_BASE}/api/leaves/${leaveId}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus, reviewedBy: currentUser?.name || 'Faculty' })
@@ -2169,7 +2183,7 @@
       showToast(`✅ Leave application submitted for ${newLeave.studentName}!`, 'success');
 
       try {
-        fetch('http://localhost:5001/api/leaves', {
+        fetch(`${API_BASE}/api/leaves`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newLeave)
@@ -2230,7 +2244,7 @@
       showToast(`✅ Student ${name} (${id}) added successfully!`, 'success');
 
       try {
-        fetch('http://localhost:5001/api/students', {
+        fetch(`${API_BASE}/api/students`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newStudent)
