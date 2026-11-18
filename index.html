@@ -9,7 +9,8 @@
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
 
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,59 +47,111 @@
     body {
       font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
     }
+
     ::-webkit-scrollbar {
       width: 6px;
       height: 6px;
     }
+
     ::-webkit-scrollbar-track {
       background: #f1f5f9;
     }
+
     ::-webkit-scrollbar-thumb {
       background: #cbd5e1;
       border-radius: 9999px;
     }
+
     ::-webkit-scrollbar-thumb:hover {
       background: #94a3b8;
     }
+
     @keyframes pulse-subtle {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.75; transform: scale(1.05); }
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      50% {
+        opacity: 0.75;
+        transform: scale(1.05);
+      }
     }
+
     .live-dot {
       animation: pulse-subtle 2s infinite ease-in-out;
     }
 
     /* Print & PDF styling */
     @media print {
-      body { background: white !important; color: black !important; }
-      header, aside, .no-print, button, #records-filter-date, #records-filter-dept, #records-filter-status, #records-filter-reset, #records-filter-subject {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+
+      header,
+      aside,
+      .no-print,
+      button,
+      #records-filter-date,
+      #records-filter-dept,
+      #records-filter-status,
+      #records-filter-reset,
+      #records-filter-subject {
         display: none !important;
       }
-      #tab-records { display: block !important; }
-      .tab-content:not(#tab-records) { display: none !important; }
-      .print-only { display: block !important; margin-bottom: 24px; }
-      table { width: 100% !important; border-collapse: collapse !important; }
-      th, td { border: 1px solid #cbd5e1 !important; padding: 8px 12px !important; }
+
+      #tab-records {
+        display: block !important;
+      }
+
+      .tab-content:not(#tab-records) {
+        display: none !important;
+      }
+
+      .print-only {
+        display: block !important;
+        margin-bottom: 24px;
+      }
+
+      table {
+        width: 100% !important;
+        border-collapse: collapse !important;
+      }
+
+      th,
+      td {
+        border: 1px solid #cbd5e1 !important;
+        padding: 8px 12px !important;
+      }
     }
+
     .print-only {
       display: none;
     }
   </style>
 </head>
 
-<body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
+<body
+  class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white">
 
   <!-- ==================== 1. LOGIN SCREEN ==================== -->
-  <div id="login-screen" class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4 relative overflow-hidden">
+  <div id="login-screen"
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-900 p-4 relative overflow-hidden">
     <!-- Ambient glowing backgrounds -->
     <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -bottom-40 -right-40 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl pointer-events-none">
+    </div>
 
-    <div class="w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-950/40 border border-white/40 p-8 sm:p-10 space-y-6 relative z-10">
-      
+    <div
+      class="w-full max-w-lg bg-white/95 backdrop-blur-xl rounded-3xl shadow-2xl shadow-indigo-950/40 border border-white/40 p-8 sm:p-10 space-y-6 relative z-10">
+
       <!-- Brand Header -->
       <div class="text-center space-y-2">
-        <div class="inline-flex p-3.5 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-2xl shadow-lg shadow-brand-500/30">
+        <div
+          class="inline-flex p-3.5 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-2xl shadow-lg shadow-brand-500/30">
           <i data-lucide="database" class="w-7 h-7 stroke-[2.2]"></i>
         </div>
         <h1 class="text-2xl font-extrabold text-slate-900 tracking-tight">NexusAttendance</h1>
@@ -115,7 +168,8 @@
           <span class="text-[11px] text-slate-400">Click to fill inputs only (no auto-login)</span>
         </div>
         <div class="grid grid-cols-3 gap-2">
-          <button type="button" onclick="fillRoleCredentials('admin')" class="p-2.5 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/80 text-left transition-all group">
+          <button type="button" onclick="fillRoleCredentials('admin')"
+            class="p-2.5 rounded-xl border border-indigo-200 bg-indigo-50/60 hover:bg-indigo-100/80 text-left transition-all group">
             <div class="flex items-center space-x-1.5 text-indigo-700 font-bold text-xs">
               <i data-lucide="shield" class="w-3.5 h-3.5"></i>
               <span>Admin</span>
@@ -123,7 +177,8 @@
             <p class="text-[10px] text-slate-500 truncate mt-0.5">admin@nexus.com</p>
           </button>
 
-          <button type="button" onclick="fillRoleCredentials('teacher')" class="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/80 text-left transition-all group">
+          <button type="button" onclick="fillRoleCredentials('teacher')"
+            class="p-2.5 rounded-xl border border-emerald-200 bg-emerald-50/60 hover:bg-emerald-100/80 text-left transition-all group">
             <div class="flex items-center space-x-1.5 text-emerald-700 font-bold text-xs">
               <i data-lucide="graduation-cap" class="w-3.5 h-3.5"></i>
               <span>Teacher</span>
@@ -131,7 +186,8 @@
             <p class="text-[10px] text-slate-500 truncate mt-0.5">teacher@nexus.com</p>
           </button>
 
-          <button type="button" onclick="fillRoleCredentials('student')" class="p-2.5 rounded-xl border border-purple-200 bg-purple-50/60 hover:bg-purple-100/80 text-left transition-all group">
+          <button type="button" onclick="fillRoleCredentials('student')"
+            class="p-2.5 rounded-xl border border-purple-200 bg-purple-50/60 hover:bg-purple-100/80 text-left transition-all group">
             <div class="flex items-center space-x-1.5 text-purple-700 font-bold text-xs">
               <i data-lucide="user" class="w-3.5 h-3.5"></i>
               <span>Student</span>
@@ -156,7 +212,8 @@
       <!-- 1. LOGIN FORM -->
       <form id="login-form" onsubmit="handleLoginSubmit(event)" class="space-y-4 pt-1">
         <!-- Error Alert -->
-        <div id="login-error" class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3.5 py-3 rounded-xl flex items-center space-x-2.5">
+        <div id="login-error"
+          class="hidden bg-rose-50 border border-rose-200 text-rose-700 text-xs px-3.5 py-3 rounded-xl flex items-center space-x-2.5">
           <i data-lucide="alert-triangle" class="w-4 h-4 flex-shrink-0 text-rose-500"></i>
           <span id="login-error-text" class="font-medium">Invalid email or password</span>
         </div>
@@ -173,13 +230,15 @@
         <div>
           <div class="flex justify-between items-center mb-1.5">
             <label class="block text-xs font-bold uppercase tracking-wider text-slate-600">Password</label>
-            <span class="text-xs text-brand-600 font-semibold cursor-pointer" onclick="showToast('Demo password: admin123', 'info')">Demo: admin123</span>
+            <span class="text-xs text-brand-600 font-semibold cursor-pointer"
+              onclick="showToast('Demo password: admin123', 'info')">Demo: admin123</span>
           </div>
           <div class="relative">
             <i data-lucide="lock" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="password" id="login-password" required placeholder="••••••••"
               class="w-full pl-10 pr-10 py-2.5 text-sm rounded-xl border border-slate-200 bg-slate-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-transparent transition-all font-mono">
-            <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
+            <button type="button" onclick="togglePasswordVisibility()"
+              class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
               <i data-lucide="eye" id="toggle-eye" class="w-4 h-4"></i>
             </button>
           </div>
@@ -205,15 +264,18 @@
 
         <div class="grid grid-cols-2 gap-2.5">
           <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Account Role *</label>
-            <select id="reg-role" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-bold text-brand-700">
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Account Role
+              *</label>
+            <select id="reg-role" required
+              class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-bold text-brand-700">
               <option value="Student">Student</option>
               <option value="Teacher">Teacher (Faculty)</option>
             </select>
           </div>
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">Department *</label>
-            <select id="reg-dept" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-medium">
+            <select id="reg-dept" required
+              class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 font-medium">
               <option value="Computer Science">Computer Science</option>
               <option value="Data Science">Data Science</option>
               <option value="Information Tech">Information Tech</option>
@@ -223,7 +285,8 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">University / Personal Email *</label>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1">University / Personal
+            Email *</label>
           <div class="relative">
             <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="email" id="reg-email" required placeholder="name@university.edu"
@@ -254,7 +317,8 @@
   <div id="dashboard-app" class="hidden min-h-screen flex flex-col bg-slate-50">
 
     <!-- Top Navigation Bar -->
-    <header class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 shadow-sm no-print">
+    <header
+      class="h-16 bg-white border-b border-slate-200/80 sticky top-0 z-30 flex items-center justify-between px-4 sm:px-6 shadow-sm no-print">
       <div class="flex items-center space-x-3 sm:space-x-4">
         <!-- Logo for mobile -->
         <div class="flex items-center space-x-2.5 md:hidden">
@@ -272,7 +336,8 @@
         </div>
 
         <!-- Live Status Chip -->
-        <div class="hidden lg:flex items-center space-x-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-medium">
+        <div
+          class="hidden lg:flex items-center space-x-1.5 bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs px-2.5 py-1 rounded-full font-medium">
           <span class="w-2 h-2 rounded-full bg-emerald-500 live-dot"></span>
           <span>Live Sync Active</span>
         </div>
@@ -292,7 +357,8 @@
         </div>
 
         <!-- Logout Button -->
-        <button onclick="handleLogout()" title="Sign Out" class="flex items-center space-x-1.5 text-xs text-slate-500 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 px-2.5 py-1.5 rounded-xl transition-colors font-medium">
+        <button onclick="handleLogout()" title="Sign Out"
+          class="flex items-center space-x-1.5 text-xs text-slate-500 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 px-2.5 py-1.5 rounded-xl transition-colors font-medium">
           <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
           <span class="hidden sm:inline">Logout</span>
         </button>
@@ -308,12 +374,14 @@
         <!-- Brand Title -->
         <div class="h-16 flex items-center px-6 border-b border-slate-100">
           <div class="flex items-center space-x-3">
-            <div class="p-2 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-xl shadow-md shadow-brand-500/20">
+            <div
+              class="p-2 bg-gradient-to-tr from-brand-600 to-indigo-500 text-white rounded-xl shadow-md shadow-brand-500/20">
               <i data-lucide="database" class="w-5 h-5 stroke-[2.2]"></i>
             </div>
             <div>
               <span class="text-base font-extrabold text-slate-900 tracking-tight block">NexusAttendance</span>
-              <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Enterprise Hub</span>
+              <span class="text-[10px] text-slate-400 font-semibold uppercase tracking-wider block">Enterprise
+                Hub</span>
             </div>
           </div>
         </div>
@@ -339,7 +407,8 @@
               <i data-lucide="check-square" class="w-4 h-4"></i>
               <span>Mark Attendance</span>
             </div>
-            <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-md border border-emerald-200">Live</span>
+            <span
+              class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-1.5 py-0.5 rounded-md border border-emerald-200">Live</span>
           </button>
 
           <!-- Historical Records -->
@@ -359,10 +428,13 @@
               <i data-lucide="calendar-off" class="w-4 h-4"></i>
               <span>Leave Management</span>
             </div>
-            <span id="nav-leave-badge" class="text-[10px] bg-amber-50 text-amber-700 font-bold px-1.5 py-0.5 rounded-md border border-amber-200">2 Pending</span>
+            <span id="nav-leave-badge"
+              class="text-[10px] bg-amber-50 text-amber-700 font-bold px-1.5 py-0.5 rounded-md border border-amber-200">2
+              Pending</span>
           </button>
 
-          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider pt-4 mb-2 role-admin">System Admin</p>
+          <p class="px-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider pt-4 mb-2 role-admin">System
+            Admin</p>
 
           <!-- System Architecture (Admin only) -->
           <button onclick="switchTab('architecture')" id="nav-architecture"
@@ -396,30 +468,35 @@
           <div id="tab-dashboard" class="tab-content space-y-6">
 
             <!-- Welcome Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
               <div>
                 <h2 class="text-xl font-extrabold text-slate-900 tracking-tight flex items-center space-x-2">
                   <span>Welcome back,</span>
                   <span id="welcome-user-name" class="text-brand-600">Admin User</span>
                   <span>👋</span>
                 </h2>
-                <p id="welcome-user-subtitle" class="text-xs text-slate-500 mt-0.5">Here is today's real-time attendance overview, trend analytics, and department compliance.</p>
+                <p id="welcome-user-subtitle" class="text-xs text-slate-500 mt-0.5">Here is today's real-time attendance
+                  overview, trend analytics, and department compliance.</p>
               </div>
               <div class="flex items-center space-x-2 text-xs font-semibold">
                 <span class="bg-slate-100 text-slate-600 px-3 py-1.5 rounded-xl border border-slate-200">
                   📅 <span id="dashboard-date">Nov 18, 2026</span>
                 </span>
-                <button onclick="refreshDashboard()" title="Refresh Data" class="p-2 hover:bg-slate-100 text-slate-500 rounded-xl transition-colors border border-slate-200">
+                <button onclick="refreshDashboard()" title="Refresh Data"
+                  class="p-2 hover:bg-slate-100 text-slate-500 rounded-xl transition-colors border border-slate-200">
                   <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
                 </button>
               </div>
             </div>
 
             <!-- Student Profile Banner (Visible only when logged in as Student) -->
-            <div id="student-kpi-banner" class="hidden bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl shadow-brand-500/20 space-y-4">
+            <div id="student-kpi-banner"
+              class="hidden bg-gradient-to-r from-brand-600 via-indigo-600 to-purple-600 rounded-2xl p-6 text-white shadow-xl shadow-brand-500/20 space-y-4">
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div class="flex items-center space-x-3.5">
-                  <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-black text-lg border border-white/30">
+                  <div
+                    class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center font-black text-lg border border-white/30">
                     AS
                   </div>
                   <div>
@@ -428,7 +505,8 @@
                   </div>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <button onclick="openApplyLeaveModal()" class="px-4 py-2 rounded-xl bg-white text-brand-700 font-bold text-xs hover:bg-indigo-50 transition-all shadow-md active:scale-95 flex items-center space-x-1.5">
+                  <button onclick="openApplyLeaveModal()"
+                    class="px-4 py-2 rounded-xl bg-white text-brand-700 font-bold text-xs hover:bg-indigo-50 transition-all shadow-md active:scale-95 flex items-center space-x-1.5">
                     <i data-lucide="calendar-plus" class="w-4 h-4"></i>
                     <span>Apply for Leave</span>
                   </button>
@@ -450,7 +528,9 @@
                 </div>
                 <div class="bg-white/10 rounded-xl p-3 border border-white/15">
                   <span class="text-indigo-200 text-[11px] block">Eligibility Status</span>
-                  <span class="text-sm font-bold bg-emerald-400/20 text-emerald-200 border border-emerald-300/30 px-2 py-0.5 rounded-md inline-block mt-1">✓ Eligible for Exams</span>
+                  <span
+                    class="text-sm font-bold bg-emerald-400/20 text-emerald-200 border border-emerald-300/30 px-2 py-0.5 rounded-md inline-block mt-1">✓
+                    Eligible for Exams</span>
                 </div>
               </div>
             </div>
@@ -459,7 +539,8 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
               <!-- Total Enrolled -->
-              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div
+                class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold text-slate-500">Total Enrolled</span>
                   <div class="p-2 bg-blue-50 text-blue-600 rounded-xl">
@@ -468,7 +549,8 @@
                 </div>
                 <div class="mt-3 flex items-baseline justify-between">
                   <span id="stat-total" class="text-2xl font-black text-slate-900 tracking-tight">50</span>
-                  <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
+                  <span
+                    class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
                     <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +4 new
                   </span>
                 </div>
@@ -476,7 +558,8 @@
               </div>
 
               <!-- Present Today -->
-              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div
+                class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold text-slate-500">Present Today</span>
                   <div class="p-2 bg-emerald-50 text-emerald-600 rounded-xl">
@@ -485,13 +568,16 @@
                 </div>
                 <div class="mt-3 flex items-baseline justify-between">
                   <span id="stat-present" class="text-2xl font-black text-emerald-600 tracking-tight">42</span>
-                  <span id="stat-present-rate" class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">84.0% rate</span>
+                  <span id="stat-present-rate"
+                    class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md">84.0%
+                    rate</span>
                 </div>
                 <div class="mt-2 text-[11px] text-slate-400">Verified through active check-ins</div>
               </div>
 
               <!-- Absent Today -->
-              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div
+                class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold text-slate-500">Absent Today</span>
                   <div class="p-2 bg-rose-50 text-rose-600 rounded-xl">
@@ -500,13 +586,15 @@
                 </div>
                 <div class="mt-3 flex items-baseline justify-between">
                   <span id="stat-absent" class="text-2xl font-black text-rose-600 tracking-tight">8</span>
-                  <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">16.0% rate</span>
+                  <span class="text-[11px] font-semibold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-md">16.0%
+                    rate</span>
                 </div>
                 <div class="mt-2 text-[11px] text-slate-400">Requires follow-up / leave proof</div>
               </div>
 
               <!-- Average Semester Attendance -->
-              <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+              <div
+                class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="flex items-center justify-between">
                   <span class="text-xs font-semibold text-slate-500">Semester Avg</span>
                   <div class="p-2 bg-purple-50 text-purple-600 rounded-xl">
@@ -515,7 +603,8 @@
                 </div>
                 <div class="mt-3 flex items-baseline justify-between">
                   <span id="stat-avg" class="text-2xl font-black text-brand-600 tracking-tight">88.5%</span>
-                  <span class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
+                  <span
+                    class="text-[11px] font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-md flex items-center">
                     <i data-lucide="arrow-up-right" class="w-3 h-3 mr-0.5"></i> +2.3%
                   </span>
                 </div>
@@ -529,11 +618,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
               <!-- HIGH-END INTERACTIVE CHART (DAILY / WEEKLY / MONTHLY TOGGLE) -->
-              <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
+              <div
+                class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm flex flex-col justify-between">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                   <div>
-                    <h3 id="chart-trend-title" class="text-sm font-bold text-slate-900 tracking-tight">Weekly Attendance Trend</h3>
-                    <p id="chart-trend-subtitle" class="text-xs text-slate-400">Interactive distribution of Present vs Absent students</p>
+                    <h3 id="chart-trend-title" class="text-sm font-bold text-slate-900 tracking-tight">Weekly Attendance
+                      Trend</h3>
+                    <p id="chart-trend-subtitle" class="text-xs text-slate-400">Interactive distribution of Present vs
+                      Absent students</p>
                   </div>
                   <!-- WORKING TOGGLE PILL FOR DAILY / WEEKLY / MONTHLY -->
                   <div class="flex items-center space-x-1.5 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
@@ -613,14 +705,18 @@
 
             <!-- STUDENT PERFORMANCE ANALYTICS & SEMESTER COMPLIANCE -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-              <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div
+                class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
-                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Student Performance & Semester Attendance Roster</h3>
-                  <p class="text-xs text-slate-400">University 75% mandatory examination eligibility compliance audit</p>
+                  <h3 class="text-sm font-bold text-slate-900 tracking-tight">Student Performance & Semester Attendance
+                    Roster</h3>
+                  <p class="text-xs text-slate-400">University 75% mandatory examination eligibility compliance audit
+                  </p>
                 </div>
                 <div class="flex items-center space-x-2">
                   <span class="text-xs text-slate-500 font-medium">Filter:</span>
-                  <select id="analytics-filter" onchange="filterStudentAnalytics(this.value)" class="text-xs bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl font-medium focus:outline-none">
+                  <select id="analytics-filter" onchange="filterStudentAnalytics(this.value)"
+                    class="text-xs bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl font-medium focus:outline-none">
                     <option value="all">All Enrolled Students</option>
                     <option value="risk">At Risk (< 75% Attendance)</option>
                     <option value="top">Top Attendance (> 90%)</option>
@@ -631,7 +727,8 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                    <tr
+                      class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
                       <th class="px-6 py-3.5">Student</th>
                       <th class="px-6 py-3.5">Department</th>
                       <th class="px-6 py-3.5">Attendance Rate</th>
@@ -657,20 +754,24 @@
               <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                   <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Mark Attendance</h2>
-                  <p class="text-xs text-slate-500 mt-0.5">Select class, semester, and course subject to record daily session attendance.</p>
+                  <p class="text-xs text-slate-500 mt-0.5">Select class, semester, and course subject to record daily
+                    session attendance.</p>
                 </div>
 
                 <!-- Quick Action Buttons -->
                 <div class="flex items-center space-x-2">
-                  <button onclick="openAddStudentModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
+                  <button onclick="openAddStudentModal()"
+                    class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-3.5 py-2 rounded-xl transition-all shadow-sm shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
                     <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
                     <span>Add Student</span>
                   </button>
-                  <button onclick="markAllStudents('present')" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-2 rounded-xl transition-all flex items-center space-x-1.5 active:scale-95">
+                  <button onclick="markAllStudents('present')"
+                    class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 text-xs font-semibold px-3 py-2 rounded-xl transition-all flex items-center space-x-1.5 active:scale-95">
                     <i data-lucide="check-check" class="w-3.5 h-3.5"></i>
                     <span>Mark All Present</span>
                   </button>
-                  <button onclick="clearAttendanceSelection()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold px-3 py-2 rounded-xl transition-all">
+                  <button onclick="clearAttendanceSelection()"
+                    class="bg-slate-100 hover:bg-slate-200 text-slate-600 text-xs font-semibold px-3 py-2 rounded-xl transition-all">
                     Clear
                   </button>
                 </div>
@@ -679,8 +780,10 @@
               <!-- Class, Semester & Subject Selectors -->
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-3 border-t border-slate-100 text-xs">
                 <div>
-                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Class & Section</label>
-                  <select id="attendance-class" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Class &
+                    Section</label>
+                  <select id="attendance-class"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                     <option value="Semester 5 - Section A">Semester 5 - Section A (CS)</option>
                     <option value="Semester 3 - Section B">Semester 3 - Section B (DS)</option>
                     <option value="Semester 7 - Section A">Semester 7 - Section A (SE)</option>
@@ -688,8 +791,10 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Course Subject</label>
-                  <select id="attendance-subject" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Course
+                    Subject</label>
+                  <select id="attendance-subject"
+                    class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-brand-500/20">
                     <option value="CS-301: Data Structures">CS-301: Data Structures & Algorithms</option>
                     <option value="CS-302: Database Systems">CS-302: Database Management Systems</option>
                     <option value="CS-303: Computer Networks">CS-303: Computer Networks & Security</option>
@@ -697,12 +802,15 @@
                   </select>
                 </div>
                 <div>
-                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Session Timing</label>
+                  <label class="block font-bold text-slate-600 text-[11px] uppercase tracking-wider mb-1">Session
+                    Timing</label>
                   <div class="flex items-center space-x-2">
-                    <span class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-600">
+                    <span
+                      class="flex-1 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2 font-mono text-slate-600">
                       09:00 AM - 10:30 AM
                     </span>
-                    <span class="text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-2 rounded-xl">
+                    <span
+                      class="text-emerald-700 bg-emerald-50 border border-emerald-200 font-bold px-2 py-2 rounded-xl">
                       Lecture
                     </span>
                   </div>
@@ -713,15 +821,18 @@
             <!-- Student Table Card -->
             <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
               <!-- Filter & Submit Top Bar -->
-              <div class="p-4 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-slate-50/50">
+              <div
+                class="p-4 border-b border-slate-100 flex flex-wrap gap-3 justify-between items-center bg-slate-50/50">
                 <div class="relative w-full sm:w-72">
                   <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
-                  <input type="text" id="student-search" oninput="filterStudents()" placeholder="Search students by name, ID or Dept..."
+                  <input type="text" id="student-search" oninput="filterStudents()"
+                    placeholder="Search students by name, ID or Dept..."
                     class="w-full pl-10 pr-4 py-2 rounded-xl border border-slate-200 bg-white text-xs text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500/30">
                 </div>
 
                 <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end">
-                  <span id="marked-counter" class="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-2 rounded-xl border border-slate-200/60">
+                  <span id="marked-counter"
+                    class="text-xs font-semibold text-slate-600 bg-slate-100 px-3 py-2 rounded-xl border border-slate-200/60">
                     0 of 6 selected
                   </span>
 
@@ -737,7 +848,8 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                    <tr
+                      class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
                       <th class="px-6 py-3.5">Student</th>
                       <th class="px-6 py-3.5">ID</th>
                       <th class="px-6 py-3.5">Department</th>
@@ -760,18 +872,22 @@
             <!-- Print Header (Visible only when printing to PDF) -->
             <div class="print-only text-center pb-4 border-b border-slate-300">
               <h1 class="text-xl font-bold">Nexus University - Official Attendance Audit Log</h1>
-              <p class="text-xs text-slate-600">Generated on: <span class="current-date-print"></span> &bull; Verified Academic Records</p>
+              <p class="text-xs text-slate-600">Generated on: <span class="current-date-print"></span> &bull; Verified
+                Academic Records</p>
             </div>
 
             <!-- Header with Export & Audit Actions -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm no-print">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm no-print">
               <div>
                 <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Historical Attendance Records</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Permanent relational audit logs with teacher correction approval & multi-format export.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Permanent relational audit logs with teacher correction
+                  approval & multi-format export.</p>
               </div>
 
               <div class="flex items-center space-x-2">
-                <span id="records-counter-badge" class="text-xs text-brand-700 bg-brand-50 font-bold px-3 py-1.5 rounded-xl border border-brand-100">
+                <span id="records-counter-badge"
+                  class="text-xs text-brand-700 bg-brand-50 font-bold px-3 py-1.5 rounded-xl border border-brand-100">
                   Total: 6 records
                 </span>
 
@@ -792,7 +908,8 @@
             </div>
 
             <!-- Table Card -->
-            <div id="records-table-card" class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+            <div id="records-table-card"
+              class="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
               <!-- Filter Bar -->
               <div class="p-4 border-b border-slate-100 flex flex-wrap gap-3 items-center bg-slate-50/50 no-print">
                 <div class="flex items-center space-x-2">
@@ -829,7 +946,8 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                    <tr
+                      class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
                       <th class="px-6 py-3.5">Record ID</th>
                       <th class="px-6 py-3.5">Date & Time</th>
                       <th class="px-6 py-3.5">Student Name</th>
@@ -853,14 +971,17 @@
           <div id="tab-leaves" class="tab-content hidden space-y-6">
 
             <!-- Leave Management Header -->
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+            <div
+              class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
               <div>
                 <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">Leave Management & Approvals</h2>
-                <p class="text-xs text-slate-500 mt-0.5">Students can submit leave requests with medical/official reason; faculty approves or rejects.</p>
+                <p class="text-xs text-slate-500 mt-0.5">Students can submit leave requests with medical/official
+                  reason; faculty approves or rejects.</p>
               </div>
 
               <div>
-                <button onclick="openApplyLeaveModal()" class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
+                <button onclick="openApplyLeaveModal()"
+                  class="bg-brand-600 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2 rounded-xl transition-all shadow-md shadow-brand-500/20 flex items-center space-x-1.5 active:scale-95">
                   <i data-lucide="calendar-plus" class="w-4 h-4"></i>
                   <span>Apply for Leave</span>
                 </button>
@@ -897,7 +1018,8 @@
               <div class="overflow-x-auto">
                 <table class="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
+                    <tr
+                      class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider border-b border-slate-100 text-[11px]">
                       <th class="px-6 py-3.5">Application ID</th>
                       <th class="px-6 py-3.5">Student</th>
                       <th class="px-6 py-3.5">Leave Type</th>
@@ -921,63 +1043,84 @@
           <div id="tab-architecture" class="tab-content hidden space-y-6">
 
             <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm">
-              <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">System Infrastructure & Database Topology</h2>
-              <p class="text-xs text-slate-500 mt-1">High-performance polyglot persistence architecture, distributed caching layers, and transaction protocols.</p>
+              <h2 class="text-xl font-extrabold text-slate-900 tracking-tight">System Infrastructure & Database Topology
+              </h2>
+              <p class="text-xs text-slate-500 mt-1">High-performance polyglot persistence architecture, distributed
+                caching layers, and transaction protocols.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               <!-- Primary MongoDB Database -->
-              <div class="bg-white rounded-2xl border border-emerald-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+              <div
+                class="bg-white rounded-2xl border border-emerald-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="p-2.5 bg-emerald-50 text-emerald-600 rounded-xl">
                     <i data-lucide="database" class="w-5 h-5"></i>
                   </div>
-                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Primary DB Active</span>
+                  <span
+                    class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Primary
+                    DB Active</span>
                 </div>
                 <div>
                   <h3 class="text-sm font-bold text-slate-900">MongoDB Database (Mongoose ODM)</h3>
-                  <p class="text-xs text-slate-500 mt-1">High-speed NoSQL document database storing students, accounts, attendance sessions, and leave records.</p>
+                  <p class="text-xs text-slate-500 mt-1">High-speed NoSQL document database storing students, accounts,
+                    attendance sessions, and leave records.</p>
                 </div>
                 <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-                  <div class="flex justify-between"><span>Database Name:</span> <strong class="text-slate-800">nexus_attendance</strong></div>
-                  <div class="flex justify-between"><span>Default Port:</span> <strong class="text-slate-800">27017</strong></div>
-                  <div class="flex justify-between"><span>Document Format:</span> <strong class="text-slate-800">BSON / JSON</strong></div>
+                  <div class="flex justify-between"><span>Database Name:</span> <strong
+                      class="text-slate-800">nexus_attendance</strong></div>
+                  <div class="flex justify-between"><span>Default Port:</span> <strong
+                      class="text-slate-800">27017</strong></div>
+                  <div class="flex justify-between"><span>Document Format:</span> <strong class="text-slate-800">BSON /
+                      JSON</strong></div>
                 </div>
               </div>
 
               <!-- MongoDB Collections Overview -->
-              <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+              <div
+                class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl">
                     <i data-lucide="layers" class="w-5 h-5"></i>
                   </div>
-                  <span class="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-200">4 Collections</span>
+                  <span
+                    class="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-full border border-indigo-200">4
+                    Collections</span>
                 </div>
                 <div>
                   <h3 class="text-sm font-bold text-slate-900">Mongoose Data Models</h3>
-                  <p class="text-xs text-slate-500 mt-1">Strict typed schemas for reliable query execution, indexing and indexing consistency.</p>
+                  <p class="text-xs text-slate-500 mt-1">Strict typed schemas for reliable query execution, indexing and
+                    indexing consistency.</p>
                 </div>
                 <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-                  <div class="flex justify-between"><span>Collections:</span> <strong class="text-slate-800">users, students, attendancerecords, leaverequests</strong></div>
-                  <div class="flex justify-between"><span>Indexing:</span> <strong class="text-slate-800">Unique Email & ID</strong></div>
+                  <div class="flex justify-between"><span>Collections:</span> <strong class="text-slate-800">users,
+                      students, attendancerecords, leaverequests</strong></div>
+                  <div class="flex justify-between"><span>Indexing:</span> <strong class="text-slate-800">Unique Email &
+                      ID</strong></div>
                 </div>
               </div>
 
               <!-- Real-time API Gateway -->
-              <div class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
+              <div
+                class="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-sm hover:shadow-md transition-all space-y-3">
                 <div class="flex items-center justify-between">
                   <div class="p-2.5 bg-brand-50 text-brand-600 rounded-xl">
                     <i data-lucide="zap" class="w-5 h-5"></i>
                   </div>
-                  <span class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Live Port 5001</span>
+                  <span
+                    class="text-[10px] bg-emerald-50 text-emerald-700 font-bold px-2 py-0.5 rounded-full border border-emerald-200">Live
+                    Port 5001</span>
                 </div>
                 <div>
                   <h3 class="text-sm font-bold text-slate-900">Express REST Gateway</h3>
-                  <p class="text-xs text-slate-500 mt-1">REST API endpoints bridging browser clients with MongoDB query optimization.</p>
+                  <p class="text-xs text-slate-500 mt-1">REST API endpoints bridging browser clients with MongoDB query
+                    optimization.</p>
                 </div>
                 <div class="pt-3 border-t border-slate-100 text-[11px] text-slate-500 space-y-1">
-                  <div class="flex justify-between"><span>API Base URL:</span> <strong id="ui-api-endpoint" class="text-slate-800 font-mono">http://localhost:5001</strong></div>
-                  <div class="flex justify-between"><span>Security:</span> <strong class="text-slate-800">CORS & Role Auth</strong></div>
+                  <div class="flex justify-between"><span>API Base URL:</span> <strong id="ui-api-endpoint"
+                      class="text-slate-800 font-mono">http://localhost:5001</strong></div>
+                  <div class="flex justify-between"><span>Security:</span> <strong class="text-slate-800">CORS & Role
+                      Auth</strong></div>
                 </div>
               </div>
             </div>
@@ -991,9 +1134,10 @@
 
 
   <!-- ==================== MODAL 1: ADD STUDENT MODAL ==================== -->
-  <div id="add-student-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+  <div id="add-student-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-6">
-      
+
       <!-- Modal Header -->
       <div class="flex items-center justify-between border-b border-slate-100 pb-4">
         <div class="flex items-center space-x-3">
@@ -1005,7 +1149,8 @@
             <p class="text-xs text-slate-500">Register a new student to the attendance roster</p>
           </div>
         </div>
-        <button onclick="closeAddStudentModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
+        <button onclick="closeAddStudentModal()"
+          class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100 transition-colors">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -1013,7 +1158,8 @@
       <!-- Form -->
       <form id="add-student-form" onsubmit="handleAddStudent(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student Full Name *</label>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student Full Name
+            *</label>
           <div class="relative">
             <i data-lucide="user" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="text" id="new-student-name" required placeholder="e.g. John Doe"
@@ -1023,7 +1169,8 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student ID *</label>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Student ID
+              *</label>
             <div class="relative">
               <i data-lucide="hash" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
               <input type="text" id="new-student-id" required placeholder="STU007"
@@ -1031,7 +1178,8 @@
             </div>
           </div>
           <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Department *</label>
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Department
+              *</label>
             <select id="new-student-dept" required
               class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/30 font-medium">
               <option value="Computer Science">Computer Science</option>
@@ -1043,7 +1191,8 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">University Email</label>
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">University
+            Email</label>
           <div class="relative">
             <i data-lucide="mail" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
             <input type="email" id="new-student-email" placeholder="john.doe@university.edu"
@@ -1068,9 +1217,10 @@
 
 
   <!-- ==================== MODAL 2: ATTENDANCE CORRECTION MODAL ==================== -->
-  <div id="correction-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+  <div id="correction-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-5">
-      
+
       <div class="flex items-center justify-between border-b border-slate-100 pb-4">
         <div class="flex items-center space-x-3">
           <div class="p-2.5 bg-amber-50 text-amber-600 rounded-2xl">
@@ -1081,7 +1231,8 @@
             <p class="text-xs text-slate-500">Teacher/Admin authorization required for audit modification</p>
           </div>
         </div>
-        <button onclick="closeCorrectionModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+        <button onclick="closeCorrectionModal()"
+          class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
@@ -1105,8 +1256,10 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">New Corrected Status *</label>
-          <select id="corr-new-status" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-bold focus:ring-2 focus:ring-brand-500/20">
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">New Corrected Status
+            *</label>
+          <select id="corr-new-status" required
+            class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-bold focus:ring-2 focus:ring-brand-500/20">
             <option value="Present">Present (Verified In Class)</option>
             <option value="Late">Late (Verified Delay)</option>
             <option value="Excused">Excused (Medical / Approved Leave)</option>
@@ -1115,16 +1268,20 @@
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason for Correction *</label>
-          <textarea id="corr-reason" required rows="2" placeholder="e.g. Medical certificate verified by Faculty / Scanner delay"
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason for
+            Correction *</label>
+          <textarea id="corr-reason" required rows="2"
+            placeholder="e.g. Medical certificate verified by Faculty / Scanner delay"
             class="w-full p-3 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"></textarea>
         </div>
 
         <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeCorrectionModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
+          <button type="button" onclick="closeCorrectionModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
             Cancel
           </button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
             <i data-lucide="check-check" class="w-4 h-4"></i>
             <span>Apply Correction</span>
           </button>
@@ -1135,9 +1292,10 @@
 
 
   <!-- ==================== MODAL 3: APPLY FOR LEAVE MODAL ==================== -->
-  <div id="apply-leave-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
+  <div id="apply-leave-modal"
+    class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs transition-all">
     <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl border border-slate-100 p-6 sm:p-8 space-y-5">
-      
+
       <div class="flex items-center justify-between border-b border-slate-100 pb-4">
         <div class="flex items-center space-x-3">
           <div class="p-2.5 bg-brand-50 text-brand-600 rounded-2xl">
@@ -1148,22 +1306,26 @@
             <p class="text-xs text-slate-500">Request formal leave approval from class faculty</p>
           </div>
         </div>
-        <button onclick="closeApplyLeaveModal()" class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
+        <button onclick="closeApplyLeaveModal()"
+          class="text-slate-400 hover:text-slate-600 p-1 rounded-lg hover:bg-slate-100">
           <i data-lucide="x" class="w-5 h-5"></i>
         </button>
       </div>
 
       <form id="apply-leave-form" onsubmit="handleLeaveSubmit(event)" class="space-y-4 text-xs">
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Applicant Student</label>
-          <select id="leave-student-select" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Applicant
+            Student</label>
+          <select id="leave-student-select" required
+            class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
             <!-- Dynamically populated -->
           </select>
         </div>
 
         <div>
           <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Leave Type *</label>
-          <select id="leave-type" required class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
+          <select id="leave-type" required
+            class="w-full px-3 py-2.5 text-xs rounded-xl border border-slate-200 bg-white font-medium">
             <option value="Medical / Sick Leave">Medical / Sick Leave</option>
             <option value="Family Emergency">Family Emergency</option>
             <option value="Academic Duty / Hackathon">Academic Duty / Hackathon / Conference</option>
@@ -1173,26 +1335,33 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">From Date *</label>
-            <input type="date" id="leave-start-date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
+            <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">From Date
+              *</label>
+            <input type="date" id="leave-start-date" required
+              class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
           </div>
           <div>
             <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">To Date *</label>
-            <input type="date" id="leave-end-date" required class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
+            <input type="date" id="leave-end-date" required
+              class="w-full px-3 py-2 text-xs rounded-xl border border-slate-200 bg-slate-50">
           </div>
         </div>
 
         <div>
-          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason & Details *</label>
-          <textarea id="leave-reason" required rows="2" placeholder="Explain reason for leave and attach medical proof if required..."
+          <label class="block font-bold text-slate-700 uppercase tracking-wider text-[11px] mb-1.5">Reason & Details
+            *</label>
+          <textarea id="leave-reason" required rows="2"
+            placeholder="Explain reason for leave and attach medical proof if required..."
             class="w-full p-3 text-xs rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-500/20"></textarea>
         </div>
 
         <div class="flex items-center justify-end space-x-2 pt-3 border-t border-slate-100">
-          <button type="button" onclick="closeApplyLeaveModal()" class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
+          <button type="button" onclick="closeApplyLeaveModal()"
+            class="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 font-semibold hover:bg-slate-50">
             Cancel
           </button>
-          <button type="submit" class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
+          <button type="submit"
+            class="px-5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-bold transition-all shadow-md flex items-center space-x-1.5">
             <i data-lucide="send" class="w-4 h-4"></i>
             <span>Submit Application</span>
           </button>
@@ -1206,7 +1375,7 @@
   <script>
     // --- 0. DYNAMIC API CONFIGURATION (PUBLIC HOSTING READY) ---
     // Works out-of-the-box on localhost, Vercel, Netlify, GitHub Pages, Render & Railway
-    const API_BASE = (function() {
+    const API_BASE = (function () {
       if (window.NEXUS_API_BASE) return window.NEXUS_API_BASE.replace(/\/$/, '');
       if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
         return 'http://localhost:5001';
@@ -1325,7 +1494,7 @@
           leaveRequests = resLeaves.value.leaves;
           renderLeaveRequests();
         }
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function applyRolePermissions() {
@@ -1458,8 +1627,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newUser)
-        }).catch(() => {});
-      } catch (err) {}
+        }).catch(() => { });
+      } catch (err) { }
 
       currentUser = newUser;
       localStorage.setItem('nexus_user', JSON.stringify(newUser));
@@ -1492,7 +1661,7 @@
             const data = await res.json();
             user = data.user;
           }
-        } catch (err) {}
+        } catch (err) { }
 
         if (!user) {
           if (email.includes('student')) {
@@ -1865,8 +2034,8 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ employeeId: id, status, subject: selectedSubject, class: selectedClass })
-          }).catch(() => {});
-        } catch (e) {}
+          }).catch(() => { });
+        } catch (e) { }
       }
 
       // Update KPI counters
@@ -2033,8 +2202,8 @@
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ recordId: recId, newStatus, reason, correctedBy: rec.correctedBy })
-          }).catch(() => {});
-        } catch (err) {}
+          }).catch(() => { });
+        } catch (err) { }
 
         applyRecordsFilter();
         closeCorrectionModal();
@@ -2129,8 +2298,8 @@
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: newStatus, reviewedBy: currentUser?.name || 'Faculty' })
-          }).catch(() => {});
-        } catch (err) {}
+          }).catch(() => { });
+        } catch (err) { }
       }
     }
 
@@ -2187,8 +2356,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newLeave)
-        }).catch(() => {});
-      } catch (err) {}
+        }).catch(() => { });
+      } catch (err) { }
     }
 
     // --- 8. ADD NEW STUDENT MODAL LOGIC ---
@@ -2248,8 +2417,8 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(newStudent)
-        }).catch(() => {});
-      } catch (err) {}
+        }).catch(() => { });
+      } catch (err) { }
     }
 
     // --- 9. TAB SWITCHING & TOASTS ---

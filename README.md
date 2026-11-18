@@ -4,7 +4,7 @@ A modern, multi-role academic attendance and leave management system built with 
 
 ---
 
-## 📁 Repository Structure (Public Hosting Optimized)
+## 📁 Repository Structure (Clean & Production Ready)
 
 ```text
 IMS PROJECTE/
@@ -15,19 +15,11 @@ IMS PROJECTE/
 ├── .gitignore            # Optimized gitignore (prevents node_modules & secrets upload)
 ├── README.md             # Complete deployment & setup documentation
 │
-├── backend/              # Node.js + Express + MongoDB (Mongoose) Backend API
-│   ├── server.js         # REST API & static frontend server (Port 5001)
-│   ├── mongodb_schema.js # MongoDB BSON schema & collection specifications
-│   ├── .env.example      # Sample environment variables
-│   └── package.json      # Lightweight dependencies (Express, Mongoose, Cors, Dotenv)
-│
-└── frontend/             # Alternative React (Vite) Single Page App
-    ├── src/
-    │   ├── App.jsx
-    │   ├── main.jsx
-    │   └── index.css
-    ├── index.html
-    └── package.json
+└── backend/              # Node.js + Express + MongoDB (Mongoose) Backend API
+    ├── server.js         # REST API & static frontend server (Port 5001)
+    ├── mongodb_schema.js # MongoDB BSON schema & collection specifications
+    ├── .env.example      # Sample environment variables
+    └── package.json      # Lightweight dependencies (Express, Mongoose, Cors, Dotenv)
 ```
 
 ---
