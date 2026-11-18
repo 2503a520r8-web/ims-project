@@ -1,4 +1,4 @@
-# 🎓 NexusAttendance - Enterprise Attendance & Infrastructure Platform
+# 🎓Smart Student Management System#  
 
 A modern, multi-role academic attendance and leave management system built with responsive SaaS UI, MongoDB persistence, and real-time analytics.
 
